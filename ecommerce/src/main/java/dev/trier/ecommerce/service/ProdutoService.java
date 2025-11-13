@@ -94,19 +94,6 @@ public class ProdutoService {
                 .collect(Collectors.toList());
     }
 
-//    public List<ProdutoIdResponseDto> listarProdutosPorCategoria(String categoria) {
-//        CategoriaProduto cat = CategoriaProduto.fromString(categoria);
-//        return produtoRespository.findAllByDsCategoria(cat).stream()
-//                .map(produto -> new ProdutoIdResponseDto(
-//                        produto.nmProduto(),
-//                        produto.vlProduto(),
-//                        produto.dsProduto(),
-//                        produto.categoria()
-//                ))
-//                .toList();
-//    }
-
-    //Provavel GET busca Imagem
     public ProdutoModel buscarProdutoPorId(Integer cdProduto) {
         return produtoRespository.findByCdProduto(cdProduto)
                 .orElseThrow(
@@ -129,7 +116,6 @@ public class ProdutoService {
         ProdutoModel produtoModel = produtoRespository.findByCdProduto(cdProduto)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + cdProduto));
 
-        // Atualiza apenas os campos permitidos: nmProduto, vlProduto, dsProduto
         if (updateProdutoDto.getNmProduto() != null) {
             produtoModel.setNmProduto(updateProdutoDto.getNmProduto());
         }
@@ -148,7 +134,6 @@ public class ProdutoService {
         );
     }
 
-    // Atualizar apenas imagem
     @Transactional
     public void atualizarImagemProduto(Integer cdProduto, MultipartFile imgProduto) {
         ProdutoModel produtoModel = produtoRespository.findByCdProduto(cdProduto)
