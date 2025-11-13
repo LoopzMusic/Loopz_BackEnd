@@ -9,7 +9,6 @@ public record CriarUsuarioRequestDto(
         String dsEmail,
         String dsSenha,
         Integer nuTelefone,
-        String nuRG,
         String dsEndereco,
         String nuEndereco,
         String flAtivo
