@@ -1,4 +1,5 @@
 package dev.trier.ecommerce.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.trier.ecommerce.model.enums.UsersRole;
 import jakarta.persistence.*;
@@ -20,7 +21,6 @@ import java.util.List;
 uniqueConstraints = {
         @UniqueConstraint(columnNames = {"dsEmail"}),
         @UniqueConstraint(columnNames = {"nuCPF"}),
-        @UniqueConstraint(columnNames = {"nuRG"}),
         @UniqueConstraint(columnNames = {"nuTelefone"})
 }
 )
@@ -43,8 +43,6 @@ public class UsuarioModel implements UserDetails {
 
     private String nuTelefone;
 
-    private String nuRG;
-
     private String dsCidade;
 
     private String dsEstado;
@@ -58,6 +56,19 @@ public class UsuarioModel implements UserDetails {
     @JsonManagedReference
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PedidoModel> pedidos;
+
+    @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
+    private List<FeedbackModel> feedbacks;
+
+    @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
+    private List<FavoritosModel> favoritos;
+
+    @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
+    private List<CarrinhoModel> carrinhos;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

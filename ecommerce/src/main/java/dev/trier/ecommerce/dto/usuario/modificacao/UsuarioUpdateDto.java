@@ -22,8 +22,6 @@ public record UsuarioUpdateDto(
         @Schema(description = "Número de telefone da pessoa", example = "48920023805")
         String nuTelefone,
 
-        @Schema(description = "Número de RG da pessoa", example = "7510437")
-        String nuRG,
 
         @Schema(description = "Nome da cidade", example = "Braço do Norte")
         String dsCidade,

@@ -34,7 +34,6 @@ public class UsuarioService {
         // encode password
         usuarioModel.setDsSenha(passwordEncoder.encode(usuarioCriarDto.dsSenha()));
         usuarioModel.setNuCPF(usuarioCriarDto.nuCPF());
-        usuarioModel.setNuRG(usuarioCriarDto.nuRG());
         usuarioModel.setDsCidade(usuarioCriarDto.dsCidade());
         usuarioModel.setDsEstado(usuarioCriarDto.dsEstado());
         usuarioModel.setNuTelefone(usuarioCriarDto.nuTelefone());
@@ -48,7 +47,6 @@ public class UsuarioService {
                 salvo.getNuTelefone(),
                 salvo.getDsCidade(),
                 salvo.getNuCPF(),
-                salvo.getNuRG(),
                 salvo.getNuEndereco(),
                 salvo.getDsEndereco(),
                 salvo.getDsEstado(),
@@ -72,7 +70,6 @@ public class UsuarioService {
                 salvo.getNuTelefone(),
                 salvo.getDsCidade(),
                 salvo.getNuCPF(),
-                salvo.getNuRG(),
                 salvo.getNuEndereco(),
                 salvo.getDsEndereco(),
                 salvo.getDsEstado(),
@@ -85,7 +82,6 @@ public class UsuarioService {
                 .map(usuario -> new UsuarioResponseDto(
                         usuario.getNmCliente(),
                         usuario.getNuCPF(),
-                        usuario.getNuRG(),
                         usuario.getNuTelefone(),
                         usuario.getDsCidade(),
                         usuario.getDsEstado(),
@@ -103,7 +99,6 @@ public class UsuarioService {
                 .map(usuario -> new UsuarioResponseDto(
                         usuario.getNmCliente(),
                         usuario.getNuCPF(),
-                        usuario.getNuRG(),
                         usuario.getNuTelefone(),
                         usuario.getDsCidade(),
                         usuario.getDsEstado(),
@@ -120,7 +115,6 @@ public class UsuarioService {
                .map(usuario -> new UsuarioResponseDto(
                        usuario.getNmCliente(),
                        usuario.getNuCPF(),
-                       usuario.getNuRG(),
                        usuario.getNuTelefone(),
                        usuario.getDsCidade(),
                        usuario.getDsEstado(),
@@ -136,7 +130,6 @@ public class UsuarioService {
                 .map(usuario -> new UsuarioResponseDto(
                         usuario.getNmCliente(),
                         usuario.getNuCPF(),
-                        usuario.getNuRG(),
                         usuario.getNuTelefone(),
                         usuario.getDsCidade(),
                         usuario.getDsEstado(),
