@@ -1,5 +1,6 @@
-package dev.trier.ecommerce.model;
+package dev.trier.ecommerce.model.carrinho;
 
+import dev.trier.ecommerce.model.ProdutoModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

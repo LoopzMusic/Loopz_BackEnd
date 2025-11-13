@@ -1,5 +1,6 @@
-package dev.trier.ecommerce.model;
+package dev.trier.ecommerce.model.carrinho;
 
+import dev.trier.ecommerce.model.UsuarioModel;
 import dev.trier.ecommerce.model.enums.StatusPedido;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
