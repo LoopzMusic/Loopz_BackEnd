@@ -27,7 +27,6 @@ public class EstoqueService {
     private final EstoqueRepository estoqueRepository;
     private final ProdutoRespository produtoRespository;
 
-    //Metodo criad estoque
     @Transactional
     public EstoqueCriadoRespostaDto criarEstoque(EstoqueCriarDto estoqueCriarDto) {
 
@@ -62,7 +61,6 @@ public class EstoqueService {
             estoqueModel.setProduto(produtoModel);
         }
 
-        // Copy other non-null properties (like qtdEstoqueProduto)
         Utils.copyNonNullProperties(updateDto, estoqueModel, "cdEstoque", "produto", "flAtivo");
 
         EstoqueModel salvo = estoqueRepository.save(estoqueModel);

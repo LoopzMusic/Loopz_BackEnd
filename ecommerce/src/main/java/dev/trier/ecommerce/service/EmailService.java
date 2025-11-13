@@ -16,20 +16,20 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String remetente;
 
-    public String enviarEmail(String destinatario, String assunto, String mensagem) {
-
-        try {
-            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-            simpleMailMessage.setFrom(remetente);
-            simpleMailMessage.setTo(destinatario);
-            simpleMailMessage.setSubject(assunto);
-            simpleMailMessage.setText(mensagem);
-            javaMailSender.send(simpleMailMessage);
-            return "Email enviado";
-        } catch (Exception e) {
-            return "Erro ao enviar email para " + destinatario + ": " + e.getMessage();
-        }
-    }
+//    public String enviarEmail(String destinatario, String assunto, String mensagem) {
+//
+//        try {
+//            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+//            simpleMailMessage.setFrom(remetente);
+//            simpleMailMessage.setTo(destinatario);
+//            simpleMailMessage.setSubject(assunto);
+//            simpleMailMessage.setText(mensagem);
+//            javaMailSender.send(simpleMailMessage);
+//            return "Email enviado";
+//        } catch (Exception e) {
+//            return "Erro ao enviar email para " + destinatario + ": " + e.getMessage();
+//        }
+//    }
 
     public String enviarEmailHtml(String destinatario, String assunto, String mensagemHtml) {
         try {

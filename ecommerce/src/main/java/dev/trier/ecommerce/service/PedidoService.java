@@ -23,7 +23,6 @@ public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final UsuarioRepository usuarioRepository;
 
-    //Metodo Criar Pedido
     @Transactional
     public PedidoCriarResponseDto criarPedido(PedidoCriarDto pedidoCriarDto){
         UsuarioModel usarioModel = usuarioRepository.findById(pedidoCriarDto.cdUsuario()).orElseThrow(
@@ -58,7 +57,6 @@ public class PedidoService {
                 .toList();
     }
 
-    // Novo: listar pedidos do usuário autenticado
     @Transactional()
     public List<PedidoResumoResponseDto> listarPedidosDoUsuarioPorId(Integer cdUsuario) {
 
