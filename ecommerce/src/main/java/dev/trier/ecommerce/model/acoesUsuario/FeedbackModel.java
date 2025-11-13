@@ -1,22 +1,22 @@
-package dev.trier.ecommerce.model;
+package dev.trier.ecommerce.model.acoesUsuario;
 
+import dev.trier.ecommerce.model.ProdutoModel;
+import dev.trier.ecommerce.model.UsuarioModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "TBFAVORITOS",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"cdUsuario", "cdProduto"})}
-)
+@Table(name = "TBFEEDBACK")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FavoritosModel {
+public class FeedbackModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer cdFavoritos;
+    private Integer cdFeedBack;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "cdUsuario", nullable = false)
@@ -26,8 +26,10 @@ public class FavoritosModel {
     @JoinColumn(name = "cdProduto", nullable = false)
     private ProdutoModel produto;
 
-
+    @Column(nullable = false)
     private Integer nuAvaliacao;
 
+    @Column(length = 2000)
+    private String dsComentario;
 
 }

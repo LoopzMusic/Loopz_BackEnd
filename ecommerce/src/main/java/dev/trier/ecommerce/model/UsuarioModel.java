@@ -1,6 +1,9 @@
 package dev.trier.ecommerce.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import dev.trier.ecommerce.model.acoesUsuario.FavoritosModel;
+import dev.trier.ecommerce.model.acoesUsuario.FeedbackModel;
+import dev.trier.ecommerce.model.carrinho.CarrinhoModel;
 import dev.trier.ecommerce.model.enums.UsersRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
