@@ -46,7 +46,6 @@ public class PedidoService {
         );
     }
 
-    //Metodo Listar Pedidos //SOMENTE PARA ADMIN
     public List<ListarPedidosResponseDto> listarPedidos(){
         return pedidoRepository.findAll()
                 .stream()

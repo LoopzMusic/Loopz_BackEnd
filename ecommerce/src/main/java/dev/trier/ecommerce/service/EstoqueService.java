@@ -49,13 +49,13 @@ public class EstoqueService {
 
     }
 
-    //Metodo atualizar estoque
+
     @Transactional
     public EstoqueCriadoRespostaDto atualizarEstoque(Integer cdEstoque, EstoqueUpdateDto updateDto) {
         EstoqueModel estoqueModel = estoqueRepository.findByCdEstoque(cdEstoque)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Estoque não encontrado: " + cdEstoque));
 
-        // If cdProduto is provided, fetch the product and set it
+
         if (updateDto.cdProduto() != null) {
             ProdutoModel produtoModel = produtoRespository.findById(updateDto.cdProduto())
                     .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + updateDto.cdProduto()));
@@ -89,7 +89,6 @@ public class EstoqueService {
                 .toList();
     }
 
-    //Metodo para diminuir estoque
     @Transactional
     public void diminuirEstoqueProduto(Integer cdProduto, Integer qtdEstoqueProduto) {
         EstoqueModel estoqueModel = estoqueRepository.findByProduto_CdProduto(cdProduto);

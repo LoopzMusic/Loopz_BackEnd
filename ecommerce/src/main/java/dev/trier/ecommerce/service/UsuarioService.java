@@ -31,7 +31,6 @@ public class UsuarioService {
         usuarioModel.setUserRole(UsersRole.valueOf("USER"));
         usuarioModel.setNmCliente(usuarioCriarDto.nmCliente());
         usuarioModel.setDsEmail(usuarioCriarDto.dsEmail());
-        // encode password
         usuarioModel.setDsSenha(passwordEncoder.encode(usuarioCriarDto.dsSenha()));
         usuarioModel.setNuCPF(usuarioCriarDto.nuCPF());
         usuarioModel.setDsCidade(usuarioCriarDto.dsCidade());

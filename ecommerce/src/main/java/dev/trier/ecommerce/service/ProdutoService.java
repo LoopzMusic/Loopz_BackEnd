@@ -164,7 +164,6 @@ public class ProdutoService {
         }
     }
 
-    //Verificar uso de Optional ou List
     public Optional<ProdutoNomeResponseDto> listarProdutoNome(String nmProduto) {
         return produtoRespository.findByNmProduto(nmProduto)
                 .map(produto -> new ProdutoNomeResponseDto(
