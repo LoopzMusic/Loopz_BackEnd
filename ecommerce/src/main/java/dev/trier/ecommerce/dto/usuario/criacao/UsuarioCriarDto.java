@@ -32,8 +32,6 @@ public record UsuarioCriarDto(
     @Schema(description = "Número de telefone da pessoa", example = "48920003890", requiredMode = Schema.RequiredMode.REQUIRED)
     String nuTelefone,
 
-    @Schema(description = "Número de RG da pessoa", example = "7510437")
-    String nuRG,
 
     @NotBlank(message = "A cidade é obrigatório.")
     @Schema(description = "Nome da cidade", example = "Braço do Norte", requiredMode = Schema.RequiredMode.REQUIRED)
