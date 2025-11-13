@@ -1,11 +1,13 @@
 package dev.trier.ecommerce.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.trier.ecommerce.model.acoesUsuario.FavoritosModel;
+import dev.trier.ecommerce.model.acoesUsuario.FeedbackModel;
+import dev.trier.ecommerce.model.carrinho.ItemCarrinhoModel;
 import dev.trier.ecommerce.model.enums.CategoriaProduto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Fetch;
 
 import java.util.List;
 
