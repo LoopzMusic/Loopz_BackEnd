@@ -34,10 +34,10 @@ public class ItemPedidoService {
     public ItemPedidoCriadoRespostaDto criarItemPedido(ItemPedidoCriarDto itemPedidoCriarDto) {
 
         ProdutoModel produtoModel = produtoRespository.findById(itemPedidoCriarDto.cdProduto())
-                .orElseThrow( //Procura cdProduto antes de criar no ItemPedido
+                .orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado para o código: " + itemPedidoCriarDto.cdProduto()));
         PedidoModel pedidoModel = pedidoRepository.findById(itemPedidoCriarDto.cdPedido())
-                .orElseThrow( //Procura cdPedido antes de criar no ItemPedido
+                .orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado para o código: " + itemPedidoCriarDto.cdPedido()));
 
         estoqueService.diminuirEstoqueProduto(itemPedidoCriarDto.cdProduto(),itemPedidoCriarDto.qtItem());
