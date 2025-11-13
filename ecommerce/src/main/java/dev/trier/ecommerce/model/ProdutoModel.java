@@ -56,4 +56,17 @@ public class ProdutoModel {
 
     @OneToMany(mappedBy = "produto")
     private List<ItemPedidoModel> itensPedido;
+
+    @OneToMany(mappedBy = "produto")
+    @JsonIgnore
+    private List<FeedbackModel> feedbacks;
+
+    @OneToMany(mappedBy = "produto")
+    @JsonIgnore
+    private List<FavoritosModel> favoritos;
+
+    @OneToMany(mappedBy = "produto")
+    @JsonIgnore
+    private List<ItemCarrinhoModel> itensCarrinho;
+
 }
