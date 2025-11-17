@@ -2,6 +2,7 @@ package dev.trier.ecommerce.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.trier.ecommerce.model.enums.FormaPagamento;
+import dev.trier.ecommerce.model.enums.StatusPedido;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,7 +37,9 @@ public class PedidoModel {
     @Column(nullable = false)
     private Double vlTotalPedido;
 
-    private String flAtivo = "S";
+    @Enumerated(EnumType.STRING)
+    @Column (nullable = false)
+    private StatusPedido statusPedido;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedidoModel> itensPedido;
