@@ -19,7 +19,6 @@ Este é um projeto desenvolvido com **Spring Boot 3.3.4**, utilizando as tecnolo
 - **DevTools** → recarga automática durante o desenvolvimento
 - **Apache Commons Text** → manipulação e sanitização de strings
 - **Auth0 Java JWT** → autenticação baseada em tokens JWT
-- **JUnit + Spring Security Test** → testes automatizados de integração e segurança
 
 ---
 
