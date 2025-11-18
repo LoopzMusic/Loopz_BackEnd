@@ -8,6 +8,7 @@ public record CriarProdutoResponseDto(
         Double vlProduto,
         CategoriaProduto dsCategoria,
         String dsProduto,
+        char dsAcessorio,
         Integer cdEmpresa
 ) {
 }
