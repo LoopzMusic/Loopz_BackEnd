@@ -22,6 +22,10 @@ public record ProdutoCriarDto(
         @Pattern(regexp = "^(CORDA|TECLADO|SOPRO|PERCUSSAO)$", message = "Equipamento inválido. As opções válidas são: CORDA,TECLADO,SOPRO e PERCUSSAO")
         String dsCategoria,
 
+        @Schema(description = "Indicação se o produto seria um acessório", example = "N", requiredMode = Schema.RequiredMode.REQUIRED)
+        char dsAcessorio,
+
+
         @NotBlank(message = "Obrigatório a descrição do produto")
         @Schema(description = "Descrição do produto, deixar descrito o produto neste campo para apresentar", example = "Violino fosco estudante avançado Vogga", requiredMode = Schema.RequiredMode.REQUIRED)
         String dsProduto,
