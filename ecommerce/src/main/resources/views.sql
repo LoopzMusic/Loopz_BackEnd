@@ -15,6 +15,7 @@ GROUP BY p.cd_Produto, p.nm_Produto
 ORDER BY total_vendido DESC;
 
 
+
 CREATE OR REPLACE VIEW vw_produtos_comprados_juntos AS
 SELECT
     a.cd_Produto AS produto_origem,
@@ -29,6 +30,6 @@ FROM tbitempedido a
          JOIN tbproduto p1 ON p1.cd_Produto = a.cd_Produto
          JOIN tbproduto p2 ON p2.cd_Produto = b.cd_Produto
 WHERE p.status_pedido IN ('FINALIZADO')
-GROUP BY a.cd_Produto, p1.nm_Produto, b.cd_Produto, p2.nm_Produto
+GROUP BY a.cd_Produto, b.cd_Produto
 HAVING COUNT(*) >= 2
 ORDER BY vezes_comprados_juntos DESC;
