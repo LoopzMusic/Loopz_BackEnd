@@ -1,6 +1,5 @@
 package dev.trier.ecommerce.service;
 
-import dev.trier.ecommerce.dto.empresa.criacao.EmpresaCriadaRespostaDto;
 import dev.trier.ecommerce.dto.estoque.criacao.EstoqueCriadoRespostaDto;
 import dev.trier.ecommerce.dto.estoque.criacao.EstoqueCriarDto;
 import dev.trier.ecommerce.dto.estoque.criacao.ListarEstoqueResponseDto;
@@ -8,7 +7,7 @@ import dev.trier.ecommerce.dto.estoque.modificacao.EstoqueUpdateDto;
 import dev.trier.ecommerce.model.EstoqueModel;
 import dev.trier.ecommerce.model.ProdutoModel;
 import dev.trier.ecommerce.repository.EstoqueRepository;
-import dev.trier.ecommerce.repository.ProdutoRespository;
+import dev.trier.ecommerce.repository.ProdutoRepository;
 import dev.trier.ecommerce.exceptions.RecursoNaoEncontradoException;
 import dev.trier.ecommerce.utils.Utils;
 import lombok.AllArgsConstructor;
@@ -18,14 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Service
 public class EstoqueService {
 
     private final EstoqueRepository estoqueRepository;
-    private final ProdutoRespository produtoRespository;
+    private final ProdutoRepository produtoRespository;
 
     @Transactional
     public EstoqueCriadoRespostaDto criarEstoque(EstoqueCriarDto estoqueCriarDto) {
