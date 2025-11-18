@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/produto/delete/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/produto/{cdProduto}/idProduto").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/produto/{nmProduto}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/recomendacao/**").permitAll()
 
 
                         .requestMatchers(HttpMethod.GET,"/usuario/buscar/*").permitAll()
