@@ -49,7 +49,7 @@ public class ItemPedidoService {
 
         ItemPedidoModel salvar=  itemPedidoRepository.save(itemPedidoModel);
 
-
+        //rever para retirar try/cath devido a verificação do 2auth
         try {
             if (pedidoModel != null && pedidoModel.getUsuario() != null && pedidoModel.getUsuario().getDsEmail() != null) {
                 String destinatario = pedidoModel.getUsuario().getDsEmail();

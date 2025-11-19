@@ -1,5 +1,6 @@
 package dev.trier.ecommerce.dto.carrinho.response;
 
+import dev.trier.ecommerce.model.enums.StatusCarrinho;
 import dev.trier.ecommerce.model.enums.StatusPedido;
 
 import java.math.BigDecimal;
@@ -11,7 +12,7 @@ public record CarrinhoResponseDto(
         Integer cdUsuario,
         String nomeUsuario,
         List<ItemCarrinhoDto> itens,
-        StatusPedido status,
+        StatusCarrinho status,
         BigDecimal valorTotalCarrinho,
         LocalDateTime criadoEm,
         LocalDateTime atualizadoEm
