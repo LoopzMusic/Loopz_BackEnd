@@ -31,5 +31,5 @@ FROM tbitempedido a
          JOIN tbproduto p2 ON p2.cd_Produto = b.cd_Produto
 WHERE p.status_pedido IN ('FINALIZADO')
 GROUP BY a.cd_Produto, b.cd_Produto
-HAVING COUNT(*) >= 2
+HAVING COUNT(*) >= 5
 ORDER BY vezes_comprados_juntos DESC;

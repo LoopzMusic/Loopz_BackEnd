@@ -1,5 +1,6 @@
 package dev.trier.ecommerce.service.views;
 
+import dev.trier.ecommerce.dto.views.ProdutoIdRespondeDto;
 import dev.trier.ecommerce.model.ProdutoModel;
 import dev.trier.ecommerce.repository.ProdutoRespository;
 import dev.trier.ecommerce.repository.views.ProdutosCompradosJuntosRepository;
@@ -17,21 +18,26 @@ public class RecomendacaoInteligenteService {
     private final ProdutosMaisVendidosRepository produtosMaisVendidosRepository;
     private final ProdutoRespository produtoRepository;
 
-    public List<ProdutoModel> recomendar(Integer idProduto) {
+    public List<ProdutoIdRespondeDto> recomendar(Integer idProduto) {
         var relacionados = produtosCompradosJuntosRepository.findRecomendados(idProduto);
 
         return relacionados.stream()
                 .map(r -> produtoRepository.findById(r.getProdutoRecomendado()).orElse(null))
                 .filter(Objects::nonNull)
+                .map(p -> new ProdutoIdRespondeDto(p.getCdProduto()))
+                .distinct()
                 .toList();
     }
 
-    public List<ProdutoModel> listarMaisVendidos() {
+    public List<ProdutoIdRespondeDto> listarMaisVendidos() {
         var lista = produtosMaisVendidosRepository.findAll();
 
         return lista.stream()
                 .map(v -> produtoRepository.findById(v.getCdProduto()).orElse(null))
                 .filter(Objects::nonNull)
+                .map(p -> new ProdutoIdRespondeDto(p.getCdProduto()))
+                .distinct()
                 .toList();
     }
+
 }

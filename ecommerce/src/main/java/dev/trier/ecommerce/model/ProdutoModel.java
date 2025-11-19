@@ -49,7 +49,7 @@ public class ProdutoModel {
     private String flAtivo = "S";
 
     @Column(nullable = false)
-    private char dsAcessorio = 'N';
+    private char dsAcessorio;
 
     @ManyToOne
     @JsonIgnore

@@ -8,7 +8,6 @@ public record ListarProdutosResponseDto(
         String dsCategoria,
         char dsAcessorio,
         String dsProduto,
-        byte[] imgProduto,
         Integer cdProduto,
         Integer cdEmpresa,
         Integer qtdEstoqueProduto

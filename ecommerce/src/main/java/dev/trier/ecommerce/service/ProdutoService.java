@@ -48,7 +48,7 @@ public class ProdutoService {
         produtoModel.setVlProduto(produtoCriarDto.vlProduto());
         produtoModel.setDsCategoria(CategoriaProduto.valueOf(produtoCriarDto.dsCategoria()));
         produtoModel.setDsProduto(produtoCriarDto.dsProduto());
-        produtoModel.setDsAcessorio(produtoModel.getDsAcessorio());
+        produtoModel.setDsAcessorio(produtoCriarDto.dsAcessorio());
         produtoModel.setEmpresa(empresaModel);
 
         MultipartFile imgProduto = produtoCriarDto.imgProduto();
@@ -88,7 +88,6 @@ public class ProdutoService {
                             produto.getDsCategoria().toString(),
                             produto.getDsAcessorio(),
                             produto.getDsProduto(),
-                            produto.getImgProduto(),
                             produto.getCdProduto(),
                             produto.getEmpresa().getCdEmpresa(),
                             qtdEstoque
