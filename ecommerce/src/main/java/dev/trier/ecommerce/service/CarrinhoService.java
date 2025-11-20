@@ -20,10 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @AllArgsConstructor
 public class CarrinhoService {
-    private final ProdutoRepository produtoRepository;
     private final CarrinhoRepository carrinhoRepository;
     private final UsuarioRepository usuarioRepository;
-    private final ItemCarrinhoRepository itemCarrinhoRepository;
 
     @Transactional
     public CarrinhoCriadoResponseDto criarCarrinho(CarrinhoCriarDto carrinhoCriarDto) {
