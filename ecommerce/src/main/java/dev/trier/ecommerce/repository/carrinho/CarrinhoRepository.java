@@ -9,5 +9,9 @@ import java.util.Optional;
 @Repository
 public interface CarrinhoRepository extends JpaRepository<CarrinhoModel, Integer> {
     Optional<CarrinhoModel> findByCdCarrinho(Integer cdCarrinho);
-    Optional<CarrinhoModel> findByUsuario_CdUsuarioAndStatusCarrinho(Integer cdUsuario, StatusCarrinho statusCarrinho);
+    Optional<CarrinhoModel> findByUsuario_CdUsuarioAndStatusCarrinho(
+            Integer cdUsuario,
+            StatusCarrinho statusCarrinho
+    );
+
 }
