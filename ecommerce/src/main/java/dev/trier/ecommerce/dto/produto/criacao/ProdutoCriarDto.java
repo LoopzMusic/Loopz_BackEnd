@@ -7,23 +7,27 @@ import org.springframework.web.multipart.MultipartFile;
 @Schema(description = "DTO para criação de um novo produto.")
 public record ProdutoCriarDto(
 
-        @Schema(description = "Nome do produto.", example = "Placa de vídeo RTX 4090", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Nome do produto.", example = "Violino 4/4", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank(message = "Obrigatório nome no produto")
         @Size(min = 1, message = "O produto precisa ter mais de um caracter em seu nome")
         String nmProduto,
 
-        @Schema(description = "Valor do produto em reais (precisa ser positivo).", example = "5999.90", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Valor do produto em reais (precisa ser positivo).", example = "417.00", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotNull(message = "Obrigatório colocar valor no produto")
         @Positive(message = "Valor do produto precisa ser positivo")
         Double vlProduto,
 
-        @Schema(description = "Categoria do produto. Escritas válidas: PERIFERICOS,PROCESSADOR,RAM e GABINETE", example = "PROCESSADOR", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Categoria do produto. Escritas válidas: CORDA,TECLADO,SOPRO e PERCUSSAO", example = "CORDA", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank(message = "Obrigatório preenchimento da categoria")
-        @Pattern(regexp = "^(PROCESSADOR|RAM|PERIFERICOS|GABINETE)$", message = "Equipamento inválido. As opções válidas são: PLACA_DE_VIDEO, PROCESSADOR, RAM, HEADSET, TECLADO, MOUSE, MONITOR.")
+        @Pattern(regexp = "^(CORDA|TECLADO|SOPRO|PERCUSSAO)$", message = "Equipamento inválido. As opções válidas são: CORDA,TECLADO,SOPRO e PERCUSSAO")
         String dsCategoria,
 
+        @Schema(description = "Indicação se o produto seria um acessório", example = "N", requiredMode = Schema.RequiredMode.REQUIRED)
+        char dsAcessorio,
+
+
         @NotBlank(message = "Obrigatório a descrição do produto")
-        @Schema(description = "Descrição do produto, deixar descrito o produto neste campo para apresentar", example = "Memória Ram 32GB RedDragon", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Descrição do produto, deixar descrito o produto neste campo para apresentar", example = "Violino fosco estudante avançado Vogga", requiredMode = Schema.RequiredMode.REQUIRED)
         String dsProduto,
 
 

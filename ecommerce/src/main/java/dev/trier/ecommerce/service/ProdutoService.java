@@ -47,6 +47,7 @@ public class ProdutoService {
         produtoModel.setVlProduto(produtoCriarDto.vlProduto());
         produtoModel.setDsCategoria(CategoriaProduto.valueOf(produtoCriarDto.dsCategoria()));
         produtoModel.setDsProduto(produtoCriarDto.dsProduto());
+        produtoModel.setDsAcessorio(produtoCriarDto.dsAcessorio());
         produtoModel.setEmpresa(empresaModel);
 
         MultipartFile imgProduto = produtoCriarDto.imgProduto();
@@ -64,11 +65,12 @@ public class ProdutoService {
                 salvo.getVlProduto(),
                 salvo.getDsCategoria(),
                 salvo.getDsProduto(),
-                salvo.getCdProduto()
+                salvo.getDsAcessorio(),
+                salvo.getEmpresa().getCdEmpresa()
         );
     }
 
-    //Vericar os dados do DTO
+
     public List<ListarProdutosResponseDto> listarProdutos() {
         return produtoRespository.findAll()
                 .stream()
@@ -83,8 +85,8 @@ public class ProdutoService {
                             produto.getNmProduto(),
                             produto.getVlProduto(),
                             produto.getDsCategoria().toString(),
+                            produto.getDsAcessorio(),
                             produto.getDsProduto(),
-                            produto.getImgProduto(),
                             produto.getCdProduto(),
                             produto.getEmpresa().getCdEmpresa(),
                             qtdEstoque
