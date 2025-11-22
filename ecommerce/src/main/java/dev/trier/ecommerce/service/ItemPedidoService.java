@@ -8,7 +8,7 @@ import dev.trier.ecommerce.model.PedidoModel;
 import dev.trier.ecommerce.model.ProdutoModel;
 import dev.trier.ecommerce.repository.ItemPedidoRepository;
 import dev.trier.ecommerce.repository.PedidoRepository;
-import dev.trier.ecommerce.repository.ProdutoRespository;
+import dev.trier.ecommerce.repository.ProdutoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.apache.commons.text.StringEscapeUtils;
 
-import java.util.Base64;
 import java.util.List;
 
 @AllArgsConstructor
@@ -24,7 +23,7 @@ import java.util.List;
 public class ItemPedidoService {
 
     private final ItemPedidoRepository itemPedidoRepository;
-    private final ProdutoRespository produtoRespository;
+    private final ProdutoRepository produtoRespository;
     private final PedidoRepository pedidoRepository;
     private final EstoqueService estoqueService;
     private final EmailService emailService; // ...existing code... add EmailService
@@ -50,7 +49,7 @@ public class ItemPedidoService {
 
         ItemPedidoModel salvar=  itemPedidoRepository.save(itemPedidoModel);
 
-
+        //rever para retirar try/cath devido a verificação do 2auth
         try {
             if (pedidoModel != null && pedidoModel.getUsuario() != null && pedidoModel.getUsuario().getDsEmail() != null) {
                 String destinatario = pedidoModel.getUsuario().getDsEmail();

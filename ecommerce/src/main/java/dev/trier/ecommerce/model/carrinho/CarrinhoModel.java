@@ -1,6 +1,8 @@
 package dev.trier.ecommerce.model.carrinho;
 
 import dev.trier.ecommerce.model.UsuarioModel;
+import dev.trier.ecommerce.model.enums.FormaPagamento;
+import dev.trier.ecommerce.model.enums.StatusCarrinho;
 import dev.trier.ecommerce.model.enums.StatusPedido;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,11 +37,11 @@ public class CarrinhoModel {
     @CreatedDate
     private LocalDateTime criadoEm;
 
-    @Enumerated(EnumType.STRING)
-    private StatusPedido statusCarrinho;
 
     @LastModifiedDate
     private LocalDateTime atualizadoEm;
 
+    @Enumerated(EnumType.STRING)
+    private StatusCarrinho statusCarrinho;
 
 }
