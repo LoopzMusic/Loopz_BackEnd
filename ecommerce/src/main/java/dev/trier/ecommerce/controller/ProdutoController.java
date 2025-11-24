@@ -15,12 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/produto")
@@ -42,7 +40,7 @@ public class ProdutoController {
     }
 
 
-    @CrossOrigin
+
     @GetMapping(path = "/listar/todos")
     @Operation(summary = "Listar produtos", description = "Lista todos os produtos")
     public ResponseEntity<List<ListarProdutosResponseDto>> listarTodos() {
@@ -52,7 +50,15 @@ public class ProdutoController {
                 .body(produtoService.listarProdutos());
     }
 
-    @CrossOrigin
+    @GetMapping("/{cdProduto}/detalhes")
+    @Operation(summary = "Listar produto por mais detalhes", description = "Retorna um produto por ID com todos os detalhes, incluindo a imagem.")
+    public ResponseEntity<ListarProdutoDetalhadoResponseDto> listarProdutoMaisDetalhes(@PathVariable Integer cdProduto){
+        return ResponseEntity.ok(produtoService.buscarProdutoPorIdMaisDetalhes(cdProduto));
+    }
+
+
+
+
     @GetMapping(path = "/{cdProduto}/imagem")
     @Transactional
     @Operation(summary = "Obter imagem do produto", description = "Retorna a imagem do produto em formato JPEG")
@@ -63,16 +69,15 @@ public class ProdutoController {
                 .body(produto.getImgProduto());
     }
 
-    @CrossOrigin
+
     @GetMapping(path = "/{cdProduto}/idProduto")
     @Operation(summary = "Buscar produto por ID", description = "Retorna os dados do produto pelo código")
     public ResponseEntity<Optional<ProdutoIdResponseDto>> buscarProdutoId(@PathVariable Integer cdProduto) {
-        //ProdutoIdResponseDto response = produtoService.buscarProdutoId(cdProduto);
         return ResponseEntity.ok()
                 .body(produtoService.buscarProdutoId(cdProduto));
     }
 
-    @CrossOrigin
+
     @GetMapping(path = "/{nmProduto}")
     @Operation(summary = "Buscar produto por nome", description = "Retorna os dados do produto pelo nome")
     public ResponseEntity<Optional<ProdutoNomeResponseDto>> listarProdutoNome(@PathVariable String nmProduto) {
