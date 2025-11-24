@@ -1,6 +1,7 @@
 package dev.trier.ecommerce.service;
 
 import dev.trier.ecommerce.dto.feedback.FeedbackListResponseDto;
+import dev.trier.ecommerce.dto.feedback.FeedbackRequestDto;
 import dev.trier.ecommerce.dto.feedback.FeedbackResponseDto;
 import dev.trier.ecommerce.model.ProdutoModel;
 import dev.trier.ecommerce.model.UsuarioModel;
@@ -24,27 +25,27 @@ public class FeedbackService {
     private final ProdutoRespository produtoRespository;
 
     @Transactional
-    public FeedbackResponseDto criarFeedback(FeedbackModel dto) {
+    public FeedbackResponseDto criarFeedback(FeedbackRequestDto dto) {
 
-        if (dto.getNuAvaliacao() < 1 || dto.getNuAvaliacao() > 5) {
+        if (dto.nuAvaliacao() < 1 || dto.nuAvaliacao() > 5) {
             throw new IllegalArgumentException("Avaliação deve estar entre 1 a 5 estrelas");
         }
 
-        if (dto.getDsComentario() != null && dto.getDsComentario().length() > 500) {
+        if (dto.dsComentario() != null && dto.dsComentario().length() > 500) {
             throw new IllegalArgumentException("Comentário não pode ter mais de 500 caracteres");
         }
 
-        UsuarioModel usuario = usuarioRepository.findById(dto.getCdUsuario())
+        UsuarioModel usuario = usuarioRepository.findById(dto.cdUsuario())
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
-        ProdutoModel produto = produtoRespository.findById(dto.getCdProduto())
+        ProdutoModel produto = produtoRespository.findById(dto.cdProduto())
                 .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
 
         FeedbackModel feedback = new FeedbackModel();
         feedback.setUsuario(usuario);
         feedback.setProduto(produto);
-        feedback.setNuAvaliacao(dto.getNuAvaliacao());
-        feedback.setDsComentario(dto.getDsComentario());
+        feedback.setNuAvaliacao(dto.nuAvaliacao());
+        feedback.setDsComentario(dto.dsComentario());
 
         FeedbackModel salvo = feedbackRepository.save(feedback);
 
