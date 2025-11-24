@@ -8,12 +8,11 @@ import dev.trier.ecommerce.dto.produto.response.ProdutoTextUpdateDto;
 import dev.trier.ecommerce.dto.produto.criacao.ProdutoCriarDto;
 import dev.trier.ecommerce.exceptions.RecursoNaoEncontradoException;
 import dev.trier.ecommerce.model.EmpresaModel;
-import dev.trier.ecommerce.model.EstoqueModel;
 import dev.trier.ecommerce.model.ProdutoModel;
 import dev.trier.ecommerce.model.enums.CategoriaProduto;
 import dev.trier.ecommerce.repository.EmpresaRepository;
 import dev.trier.ecommerce.repository.EstoqueRepository;
-import dev.trier.ecommerce.repository.ProdutoRespository;
+import dev.trier.ecommerce.repository.ProdutoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +31,7 @@ import dev.trier.ecommerce.repository.ItemPedidoRepository;
 @Service
 public class ProdutoService {
 
-    private final ProdutoRespository produtoRespository;
+    private final ProdutoRepository produtoRespository;
     private final EmpresaRepository empresaRepository;
     private final ItemPedidoRepository itemPedidoRepository;
     private final EstoqueRepository estoqueRepository;
@@ -43,7 +42,7 @@ public class ProdutoService {
                 .orElseThrow(
                         () -> new RuntimeException("Empresa não encontrada para o código: " + produtoCriarDto.cdEmpresa()) // Procura empresa antes de criar o produto
                 );
-        ProdutoModel produtoModel = new ProdutoModel();
+        ProdutoModel produtoModel = new ProdutoModel(); 
         produtoModel.setNmProduto(produtoCriarDto.nmProduto());
         produtoModel.setVlProduto(produtoCriarDto.vlProduto());
         produtoModel.setDsCategoria(CategoriaProduto.valueOf(produtoCriarDto.dsCategoria()));
@@ -101,6 +100,31 @@ public class ProdutoService {
                 .orElseThrow(
                         () -> new RuntimeException("Produto não encontrado"));
     }
+
+    @Transactional(readOnly = true)
+    public ListarProdutoDetalhadoResponseDto buscarProdutoPorIdMaisDetalhes(Integer cdProduto) {
+        ProdutoModel produto = produtoRespository.findByCdProduto(cdProduto)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + cdProduto));
+
+        int qtdEstoque = Optional.ofNullable(produto.getEstoques())
+                .orElse(List.of())
+                .stream()
+                .filter(e -> "S".equalsIgnoreCase(e.getFlAtivo()))
+                .mapToInt(e -> Optional.ofNullable(e.getQtdEstoqueProduto()).orElse(0))
+                .sum();
+
+        return new ListarProdutoDetalhadoResponseDto(
+                produto.getCdProduto(),
+                produto.getNmProduto(),
+                produto.getVlProduto(),
+                produto.getDsCategoria(),
+                produto.getDsProduto(),
+                String.valueOf(produto.getDsAcessorio()),
+                produto.getEmpresa().getCdEmpresa(),
+                qtdEstoque
+        );
+    }
+
 
     public Optional<ProdutoIdResponseDto> buscarProdutoId(Integer cdProduto) {
         return produtoRespository.findByCdProduto(cdProduto)

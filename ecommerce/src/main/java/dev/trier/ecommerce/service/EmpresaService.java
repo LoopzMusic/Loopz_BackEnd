@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import dev.trier.ecommerce.exceptions.EntityInUseException;
 import dev.trier.ecommerce.repository.ItemPedidoRepository;
-import dev.trier.ecommerce.repository.ProdutoRespository;
+import dev.trier.ecommerce.repository.ProdutoRepository;
 
 @AllArgsConstructor
 @Service
@@ -25,7 +25,7 @@ public class EmpresaService {
 
     private final EmpresaRepository empresaRepository;
     private final ItemPedidoRepository itemPedidoRepository;
-    private final ProdutoRespository produtoRespository;
+    private final ProdutoRepository produtoRespository;
 
     @Transactional
     public EmpresaCriadaRespostaDto criarEmpresa(EmpresaCriarDto empresadto) {

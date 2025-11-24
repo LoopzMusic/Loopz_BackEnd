@@ -1,8 +1,7 @@
 package dev.trier.ecommerce.service.views;
 
 import dev.trier.ecommerce.dto.views.ProdutoIdRespondeDto;
-import dev.trier.ecommerce.model.ProdutoModel;
-import dev.trier.ecommerce.repository.ProdutoRespository;
+import dev.trier.ecommerce.repository.ProdutoRepository;
 import dev.trier.ecommerce.repository.views.ProdutosCompradosJuntosRepository;
 import dev.trier.ecommerce.repository.views.ProdutosMaisVendidosRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,7 @@ import java.util.Objects;
 public class RecomendacaoInteligenteService {
     private final ProdutosCompradosJuntosRepository produtosCompradosJuntosRepository;
     private final ProdutosMaisVendidosRepository produtosMaisVendidosRepository;
-    private final ProdutoRespository produtoRepository;
+    private final ProdutoRepository produtoRepository;
 
     public List<ProdutoIdRespondeDto> recomendar(Integer idProduto) {
         var relacionados = produtosCompradosJuntosRepository.findRecomendados(idProduto);

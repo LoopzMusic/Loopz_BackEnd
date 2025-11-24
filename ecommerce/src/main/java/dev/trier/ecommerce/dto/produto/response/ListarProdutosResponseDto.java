@@ -13,4 +13,5 @@ public record ListarProdutosResponseDto(
         Integer qtdEstoqueProduto
 
 ) {
+
 }
