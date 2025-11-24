@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/produto/listar/todos").permitAll()
                         .requestMatchers(HttpMethod.POST, "/produto/criar").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/produto/delete/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/produto/{cdProduto}/idProduto").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/produto/{cdProduto}/detalhes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/produto/{nmProduto}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,"/recomendacao/**").permitAll()
 
