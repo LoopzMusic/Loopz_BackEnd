@@ -101,6 +101,31 @@ public class ProdutoService {
                         () -> new RuntimeException("Produto não encontrado"));
     }
 
+    @Transactional(readOnly = true)
+    public ListarProdutoDetalhadoResponseDto buscarProdutoPorIdMaisDetalhes(Integer cdProduto) {
+        ProdutoModel produto = produtoRespository.findByCdProduto(cdProduto)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + cdProduto));
+
+        int qtdEstoque = Optional.ofNullable(produto.getEstoques())
+                .orElse(List.of())
+                .stream()
+                .filter(e -> "S".equalsIgnoreCase(e.getFlAtivo()))
+                .mapToInt(e -> Optional.ofNullable(e.getQtdEstoqueProduto()).orElse(0))
+                .sum();
+
+        return new ListarProdutoDetalhadoResponseDto(
+                produto.getCdProduto(),
+                produto.getNmProduto(),
+                produto.getVlProduto(),
+                produto.getDsCategoria(),
+                produto.getDsProduto(),
+                String.valueOf(produto.getDsAcessorio()),
+                produto.getEmpresa().getCdEmpresa(),
+                qtdEstoque
+        );
+    }
+
+
     public Optional<ProdutoIdResponseDto> buscarProdutoId(Integer cdProduto) {
         return produtoRespository.findByCdProduto(cdProduto)
                 .map(produto -> new ProdutoIdResponseDto(
