@@ -23,7 +23,7 @@ import java.time.ZoneId;
 public class AuditoriaModel {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy =  GenerationType.IDENTITY)
     @RevisionNumber
     private Integer id;
 
