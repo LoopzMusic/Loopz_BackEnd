@@ -20,11 +20,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
     private final SecurityFilter securityFilter;
-    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
-    public SecurityConfig(SecurityFilter securityFilter, OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler){
+    public SecurityConfig(SecurityFilter securityFilter){
         this.securityFilter = securityFilter;
-        this.oAuth2LoginSuccessHandler = oAuth2LoginSuccessHandler;
+
     }
 
     @Bean
@@ -38,7 +37,6 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/produto/{cdProduto}/imagem").permitAll()
                         .requestMatchers(HttpMethod.GET, "/produto/listar/todos").permitAll()
@@ -72,9 +70,6 @@ public class SecurityConfig {
 
                         .anyRequest().authenticated())
 
-                .oauth2Login(oauth2 -> oauth2
-                        .successHandler(oAuth2LoginSuccessHandler)
-                )
 
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

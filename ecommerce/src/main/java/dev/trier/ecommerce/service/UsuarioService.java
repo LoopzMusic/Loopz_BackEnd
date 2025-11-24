@@ -54,37 +54,6 @@ public class UsuarioService {
         );
     }
 
-    @Transactional
-    public UsuarioModel findByEmailOrCreateFromOAuth2(String email, String name, String googleId) {
-        Optional<UsuarioModel> usuarioExistente = usuarioRepository.findByDsEmail(email);
-
-        if (usuarioExistente.isPresent()) {
-            UsuarioModel usuario = usuarioExistente.get();
-            if (usuario.getGoogleId() == null) {
-                usuario.setGoogleId(googleId);
-                usuarioRepository.save(usuario);
-            }
-            return usuario;
-        }
-
-        UsuarioModel novoUsuario = new UsuarioModel();
-        novoUsuario.setDsEmail(email);
-        novoUsuario.setNmCliente(name != null ? name : email.split("@")[0]);
-        novoUsuario.setGoogleId(googleId);
-        novoUsuario.setUserRole(UsersRole.USER);
-        novoUsuario.setFlAtivo("S");
-
-        novoUsuario.setDsSenha(passwordEncoder.encode(UUID.randomUUID().toString()));
-
-        novoUsuario.setNuCPF("00000000000");
-        novoUsuario.setNuTelefone("00000000000");
-        novoUsuario.setDsCidade("");
-        novoUsuario.setDsEstado("");
-        novoUsuario.setDsEndereco("");
-        novoUsuario.setNuEndereco("");
-
-        return usuarioRepository.save(novoUsuario);
-    }
 
     @Transactional
     public UsuarioResponseDto atualizarUsuario(Integer cdUsuario, UsuarioUpdateDto usuarioUpdateDto) {
