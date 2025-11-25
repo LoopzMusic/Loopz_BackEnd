@@ -7,7 +7,7 @@ import dev.trier.ecommerce.model.ProdutoModel;
 import dev.trier.ecommerce.model.UsuarioModel;
 import dev.trier.ecommerce.model.acoesUsuario.FeedbackModel;
 import dev.trier.ecommerce.repository.FeedbackRepository;
-import dev.trier.ecommerce.repository.ProdutoRespository;
+import dev.trier.ecommerce.repository.ProdutoRepository;
 import dev.trier.ecommerce.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class FeedbackService {
 
     private final FeedbackRepository feedbackRepository;
     private final UsuarioRepository usuarioRepository;
-    private final ProdutoRespository produtoRespository;
+    private final ProdutoRepository produtoRepository;
 
     @Transactional
     public FeedbackResponseDto criarFeedback(FeedbackRequestDto dto) {
@@ -38,7 +38,7 @@ public class FeedbackService {
         UsuarioModel usuario = usuarioRepository.findById(dto.cdUsuario())
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
-        ProdutoModel produto = produtoRespository.findById(dto.cdProduto())
+        ProdutoModel produto = produtoRepository.findById(dto.cdProduto())
                 .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
 
         FeedbackModel feedback = new FeedbackModel();
@@ -94,7 +94,7 @@ public class FeedbackService {
     }
 
     public List<FeedbackListResponseDto> listarPorProduto(Integer cdProduto) {
-        if (!produtoRespository.existsById(cdProduto)) {
+        if (!produtoRepository.existsById(cdProduto)) {
             throw new IllegalArgumentException("Produto não encontrado");
         }
 
