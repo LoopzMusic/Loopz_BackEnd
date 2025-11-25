@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -57,6 +58,15 @@ public class ProdutoController {
     }
 
 
+//    @PatchMapping(path = "/alterar/{cdProduto}/imagem", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    @Operation(summary = "Atualizar imagem do produto", description = "Atualiza apenas a imagem de um produto")
+//    public ResponseEntity<Void> atualizarImagemProduto(
+//            @PathVariable Integer cdProduto,
+//            @RequestParam("imgProduto") MultipartFile imgProduto) {
+//
+//        produtoService.atualizarImagemProduto(cdProduto, imgProduto);
+//        return ResponseEntity.noContent().build();
+//    }
 
 
     @GetMapping(path = "/{cdProduto}/imagem")
