@@ -20,6 +20,7 @@ import java.time.ZoneId;
 @Setter
 @NoArgsConstructor
 @RevisionEntity(AuditoriaUsuarioModel.class)
+@Table(name = "TBAUDITORIAPEDIDO")
 public class AuditoriaModel {
 
     @Id
