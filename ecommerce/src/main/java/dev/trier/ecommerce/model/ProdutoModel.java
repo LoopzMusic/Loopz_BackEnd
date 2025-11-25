@@ -48,6 +48,9 @@ public class ProdutoModel {
     @Column(nullable = false)
     private String flAtivo = "S";
 
+    @Column(nullable = false)
+    private char dsAcessorio;
+
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "cdEmpresa")

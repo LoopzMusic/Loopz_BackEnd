@@ -1,4 +1,5 @@
 package dev.trier.ecommerce.model;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.trier.ecommerce.model.acoesUsuario.FavoritosModel;
@@ -21,11 +22,12 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Table(name = "TBUSUARIO",
-uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"dsEmail"}),
-        @UniqueConstraint(columnNames = {"nuCPF"}),
-        @UniqueConstraint(columnNames = {"nuTelefone"})
-}
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"dsEmail"}),
+                @UniqueConstraint(columnNames = {"nuCPF"}),
+                @UniqueConstraint(columnNames = {"nuTelefone"}),
+                @UniqueConstraint(columnNames = {"googleId"})
+        }
 )
 public class UsuarioModel implements UserDetails {
 
@@ -33,7 +35,7 @@ public class UsuarioModel implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cdUsuario;
 
-    @Enumerated(EnumType.STRING) // Tem que colocar ou admin ou user no banco
+    @Enumerated(EnumType.STRING)
     private UsersRole userRole;
 
     private String nmCliente;
@@ -56,6 +58,9 @@ public class UsuarioModel implements UserDetails {
 
     private String flAtivo = "S";
 
+    @Column(unique = true)
+    private String googleId;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PedidoModel> pedidos;
@@ -71,7 +76,6 @@ public class UsuarioModel implements UserDetails {
     @OneToMany(mappedBy = "usuario")
     @JsonIgnore
     private List<CarrinhoModel> carrinhos;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

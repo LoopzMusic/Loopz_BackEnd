@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dataSource name="neotech@localhost">
+<dataSource name="Loopz">
   <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.53">
     <root id="1"/>
     <database id="2" parent="1" name="Exerc_3">
@@ -3474,20 +3474,14 @@
       <OwnerName>postgres</OwnerName>
     </schema>
     <schema id="274" parent="11" name="public">
-      <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <LastIntrospectionL1Xid>1245</LastIntrospectionL1Xid>
-      <LastIntrospectionL2Xid>1245</LastIntrospectionL2Xid>
-      <LastIntrospectionL3Xid>1245</LastIntrospectionL3Xid>
-      <LastIntrospectionLevel>3</LastIntrospectionLevel>
       <LastIntrospectionLocalTimestamp>2025-10-08.04:04:50</LastIntrospectionLocalTimestamp>
       <ObjectId>2200</ObjectId>
       <StateNumber>532</StateNumber>
       <OwnerName>pg_database_owner</OwnerName>
     </schema>
     <sequence id="275" parent="274" name="tbempresa_cd_empresa_seq">
-      <DetailsLevel>2</DetailsLevel>
       <ObjectId>50090</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
@@ -3496,7 +3490,6 @@
       <OwnerName>postgres</OwnerName>
     </sequence>
     <sequence id="276" parent="274" name="tbestoque_cd_estoque_seq">
-      <DetailsLevel>2</DetailsLevel>
       <ObjectId>50098</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
@@ -3505,7 +3498,6 @@
       <OwnerName>postgres</OwnerName>
     </sequence>
     <sequence id="277" parent="274" name="tbpedido_cd_pedido_seq">
-      <DetailsLevel>2</DetailsLevel>
       <ObjectId>50104</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
@@ -3514,7 +3506,6 @@
       <OwnerName>postgres</OwnerName>
     </sequence>
     <sequence id="278" parent="274" name="tbproduto_cd_item_pedido_seq">
-      <DetailsLevel>2</DetailsLevel>
       <ObjectId>50113</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
@@ -3523,7 +3514,6 @@
       <OwnerName>postgres</OwnerName>
     </sequence>
     <sequence id="279" parent="274" name="tbproduto_cd_produto_seq">
-      <DetailsLevel>2</DetailsLevel>
       <ObjectId>50114</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
@@ -3532,7 +3522,6 @@
       <OwnerName>postgres</OwnerName>
     </sequence>
     <sequence id="280" parent="274" name="tbusuario_cd_usuario_seq">
-      <DetailsLevel>2</DetailsLevel>
       <ObjectId>50123</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
@@ -3541,35 +3530,30 @@
       <OwnerName>postgres</OwnerName>
     </sequence>
     <table id="281" parent="274" name="tbempresa">
-      <DetailsLevel>2</DetailsLevel>
       <ObjectId>50091</ObjectId>
       <StateNumber>1244</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>postgres</OwnerName>
     </table>
     <table id="282" parent="274" name="tbestoque">
-      <DetailsLevel>2</DetailsLevel>
       <ObjectId>50099</ObjectId>
       <StateNumber>1240</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>postgres</OwnerName>
     </table>
     <table id="283" parent="274" name="tbpedido">
-      <DetailsLevel>2</DetailsLevel>
       <ObjectId>50105</ObjectId>
       <StateNumber>1241</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>postgres</OwnerName>
     </table>
     <table id="284" parent="274" name="tbproduto">
-      <DetailsLevel>2</DetailsLevel>
       <ObjectId>50115</ObjectId>
       <StateNumber>1240</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>postgres</OwnerName>
     </table>
     <table id="285" parent="274" name="tbusuario">
-      <DetailsLevel>2</DetailsLevel>
       <ObjectId>50124</ObjectId>
       <StateNumber>1241</StateNumber>
       <AccessMethodId>2</AccessMethodId>

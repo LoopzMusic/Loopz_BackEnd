@@ -52,6 +52,7 @@ public class PedidoService {
                         pedidos.getUsuario().getCdUsuario(),
                         pedidos.getFormaPagamento(),
                         pedidos.getVlFrete(),
+                        pedidos.getStatusPedido(),
                         pedidos.getVlTotalPedido()
                 ))
                 .toList();

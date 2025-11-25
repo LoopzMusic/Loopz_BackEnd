@@ -23,31 +23,31 @@ public class SecurityConfig {
 
     public SecurityConfig(SecurityFilter securityFilter){
         this.securityFilter = securityFilter;
+
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return  http
                 .csrf(csrf -> csrf.disable())
-                .cors( cors -> cors.configure(http))
+                .cors(cors -> cors.configure(http))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
 
-
-                        .requestMatchers(HttpMethod.GET, "produto/{cdProduto}/imagem").permitAll()
-                        .requestMatchers(HttpMethod.GET, "produto/listar/todos").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/produto/{cdProduto}/imagem").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/produto/listar/todos").permitAll()
                         .requestMatchers(HttpMethod.POST, "/produto/criar").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/produto/delete/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/produto/{cdProduto}/idProduto").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/produto/{cdProduto}/detalhes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/produto/{nmProduto}").hasRole("ADMIN")
-
+                        .requestMatchers(HttpMethod.GET,"/recomendacao/**").permitAll()
 
                         .requestMatchers(HttpMethod.GET,"/usuario/buscar/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/usuario/listar/usuarios").hasRole("ADMIN")
-
 
                         .requestMatchers(
                                 "/swagger-ui/**",
@@ -58,32 +58,26 @@ public class SecurityConfig {
                                 "/webjars/**"
                         ).permitAll()
 
-
                         .requestMatchers(HttpMethod.POST, "/empresa/criar").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/empresa/update/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/empresa/delete/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/empresa/listar/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/empresa/listarCNPJ/**").hasRole("ADMIN")
 
-
                         .requestMatchers(HttpMethod.POST, "/estoque/criar").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/estoque/update/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/estoque/listar/**").hasRole("ADMIN")
 
-
                         .anyRequest().authenticated())
+
+
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-
     }
 
     @Bean
-    public AuthenticationManager authenticationManager (AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
 }

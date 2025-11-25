@@ -32,7 +32,6 @@ public class SecurityFilter extends OncePerRequestFilter {
 
                 JWTUserData userData = optUser.get();
 
-                // Converte a role do token para GrantedAuthority
                 String role = userData.role();
                 List<SimpleGrantedAuthority> authorities = List.of();
                 if (role != null && !role.isBlank()) {

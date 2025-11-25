@@ -8,12 +8,11 @@ import dev.trier.ecommerce.dto.produto.response.ProdutoTextUpdateDto;
 import dev.trier.ecommerce.dto.produto.criacao.ProdutoCriarDto;
 import dev.trier.ecommerce.exceptions.RecursoNaoEncontradoException;
 import dev.trier.ecommerce.model.EmpresaModel;
-import dev.trier.ecommerce.model.EstoqueModel;
 import dev.trier.ecommerce.model.ProdutoModel;
 import dev.trier.ecommerce.model.enums.CategoriaProduto;
 import dev.trier.ecommerce.repository.EmpresaRepository;
 import dev.trier.ecommerce.repository.EstoqueRepository;
-import dev.trier.ecommerce.repository.ProdutoRespository;
+import dev.trier.ecommerce.repository.ProdutoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +31,7 @@ import dev.trier.ecommerce.repository.ItemPedidoRepository;
 @Service
 public class ProdutoService {
 
-    private final ProdutoRespository produtoRespository;
+    private final ProdutoRepository produtoRepository;
     private final EmpresaRepository empresaRepository;
     private final ItemPedidoRepository itemPedidoRepository;
     private final EstoqueRepository estoqueRepository;
@@ -43,11 +42,12 @@ public class ProdutoService {
                 .orElseThrow(
                         () -> new RuntimeException("Empresa não encontrada para o código: " + produtoCriarDto.cdEmpresa()) // Procura empresa antes de criar o produto
                 );
-        ProdutoModel produtoModel = new ProdutoModel();
+        ProdutoModel produtoModel = new ProdutoModel(); 
         produtoModel.setNmProduto(produtoCriarDto.nmProduto());
         produtoModel.setVlProduto(produtoCriarDto.vlProduto());
         produtoModel.setDsCategoria(CategoriaProduto.valueOf(produtoCriarDto.dsCategoria()));
         produtoModel.setDsProduto(produtoCriarDto.dsProduto());
+        produtoModel.setDsAcessorio(produtoCriarDto.dsAcessorio());
         produtoModel.setEmpresa(empresaModel);
 
         MultipartFile imgProduto = produtoCriarDto.imgProduto();
@@ -58,20 +58,21 @@ public class ProdutoService {
                 throw new RuntimeException("Erro ao processar imagem do produto", e);
             }
         }
-        ProdutoModel salvo = produtoRespository.save(produtoModel);
+        ProdutoModel salvo = produtoRepository.save(produtoModel);
         return new CriarProdutoResponseDto(
                 salvo.getCdProduto(),
                 salvo.getNmProduto(),
                 salvo.getVlProduto(),
                 salvo.getDsCategoria(),
                 salvo.getDsProduto(),
-                salvo.getCdProduto()
+                salvo.getDsAcessorio(),
+                salvo.getEmpresa().getCdEmpresa()
         );
     }
 
-    //Vericar os dados do DTO
+
     public List<ListarProdutosResponseDto> listarProdutos() {
-        return produtoRespository.findAll()
+        return produtoRepository.findAll()
                 .stream()
                 .map(produto -> {
                     int qtdEstoque = Stream.ofNullable(produto.getEstoques())
@@ -84,8 +85,8 @@ public class ProdutoService {
                             produto.getNmProduto(),
                             produto.getVlProduto(),
                             produto.getDsCategoria().toString(),
+                            produto.getDsAcessorio(),
                             produto.getDsProduto(),
-                            produto.getImgProduto(),
                             produto.getCdProduto(),
                             produto.getEmpresa().getCdEmpresa(),
                             qtdEstoque
@@ -95,13 +96,38 @@ public class ProdutoService {
     }
 
     public ProdutoModel buscarProdutoPorId(Integer cdProduto) {
-        return produtoRespository.findByCdProduto(cdProduto)
+        return produtoRepository.findByCdProduto(cdProduto)
                 .orElseThrow(
                         () -> new RuntimeException("Produto não encontrado"));
     }
 
+    @Transactional(readOnly = true)
+    public ListarProdutoDetalhadoResponseDto buscarProdutoPorIdMaisDetalhes(Integer cdProduto) {
+        ProdutoModel produto = produtoRepository.findByCdProduto(cdProduto)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + cdProduto));
+
+        int qtdEstoque = Optional.ofNullable(produto.getEstoques())
+                .orElse(List.of())
+                .stream()
+                .filter(e -> "S".equalsIgnoreCase(e.getFlAtivo()))
+                .mapToInt(e -> Optional.ofNullable(e.getQtdEstoqueProduto()).orElse(0))
+                .sum();
+
+        return new ListarProdutoDetalhadoResponseDto(
+                produto.getCdProduto(),
+                produto.getNmProduto(),
+                produto.getVlProduto(),
+                produto.getDsCategoria(),
+                produto.getDsProduto(),
+                String.valueOf(produto.getDsAcessorio()),
+                produto.getEmpresa().getCdEmpresa(),
+                qtdEstoque
+        );
+    }
+
+
     public Optional<ProdutoIdResponseDto> buscarProdutoId(Integer cdProduto) {
-        return produtoRespository.findByCdProduto(cdProduto)
+        return produtoRepository.findByCdProduto(cdProduto)
                 .map(produto -> new ProdutoIdResponseDto(
                         produto.getNmProduto(),
                         produto.getVlProduto(),
@@ -113,7 +139,7 @@ public class ProdutoService {
 
     @Transactional
     public ProdutoTextUpdateResponseDto atualizarProdutoTexto(ProdutoTextUpdateDto updateProdutoDto, Integer cdProduto) {
-        ProdutoModel produtoModel = produtoRespository.findByCdProduto(cdProduto)
+        ProdutoModel produtoModel = produtoRepository.findByCdProduto(cdProduto)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + cdProduto));
 
         if (updateProdutoDto.getNmProduto() != null) {
@@ -126,7 +152,7 @@ public class ProdutoService {
             produtoModel.setDsProduto(updateProdutoDto.getDsProduto());
         }
 
-        ProdutoModel salvo = produtoRespository.save(produtoModel);
+        ProdutoModel salvo = produtoRepository.save(produtoModel);
         return new ProdutoTextUpdateResponseDto(
                 salvo.getNmProduto(),
                 salvo.getVlProduto(),
@@ -134,23 +160,24 @@ public class ProdutoService {
         );
     }
 
-    @Transactional
-    public void atualizarImagemProduto(Integer cdProduto, MultipartFile imgProduto) {
-        ProdutoModel produtoModel = produtoRespository.findByCdProduto(cdProduto)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + cdProduto));
-
-        if (imgProduto != null && !imgProduto.isEmpty()) {
-            try {
-                produtoModel.setImgProduto(imgProduto.getBytes());
-                produtoRespository.save(produtoModel);
-            } catch (IOException e) {
-                throw new RuntimeException("Erro ao processar imagem do produto", e);
-            }
-        }
-    }
+//    @Transactional
+//    public void atualizarImagemProduto(Integer cdProduto, MultipartFile imgProduto) {
+//
+//        ProdutoModel produtoModel = produtoRepository.findByCdProduto(cdProduto)
+//                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + cdProduto));
+//
+//        if (imgProduto != null && !imgProduto.isEmpty()) {
+//            try {
+//                produtoModel.setImgProduto(imgProduto.getBytes());
+//                produtoRepository.save(produtoModel);
+//            } catch (IOException e) {
+//                throw new RuntimeException("Erro ao processar imagem do produto", e);
+//            }
+//        }
+//    }
 
     public Optional<ProdutoNomeResponseDto> listarProdutoNome(String nmProduto) {
-        return produtoRespository.findByNmProduto(nmProduto)
+        return produtoRepository.findByNmProduto(nmProduto)
                 .map(produto -> new ProdutoNomeResponseDto(
                         produto.getNmProduto(),
                         produto.getVlProduto(),
@@ -167,7 +194,7 @@ public class ProdutoService {
             throw new EntityInUseException("Produto já está presente em um ItemPedido e não pode ser excluído.");
         }
 
-        produtoRespository.deleteById(cdProduto);
+        produtoRepository.deleteById(cdProduto);
     }
 
 }

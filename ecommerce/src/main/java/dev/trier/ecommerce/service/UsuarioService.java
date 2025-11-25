@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -53,13 +54,13 @@ public class UsuarioService {
         );
     }
 
+
     @Transactional
     public UsuarioResponseDto atualizarUsuario(Integer cdUsuario, UsuarioUpdateDto usuarioUpdateDto) {
         UsuarioModel usuarioModel = usuarioRepository.findByCdUsuario(cdUsuario)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado: " + cdUsuario));
 
-        
-        Utils.copyNonNullProperties(usuarioUpdateDto, usuarioModel, "cdUsuario", "userRole", "pedidos", "flAtivo");
+        Utils.copyNonNullProperties(usuarioUpdateDto, usuarioModel, "cdUsuario", "userRole", "pedidos", "flAtivo", "googleId");
 
         UsuarioModel salvo = usuarioRepository.save(usuarioModel);
 
@@ -88,12 +89,11 @@ public class UsuarioService {
                         usuario.getNuEndereco(),
                         usuario.getDsEmail(),
                         usuario.getFlAtivo()
-
                 ));
     }
 
     public List<UsuarioResponseDto> listarUsuarios(){
-        return usuarioRepository.findAll() 
+        return usuarioRepository.findAll()
                 .stream()
                 .map(usuario -> new UsuarioResponseDto(
                         usuario.getNmCliente(),
@@ -106,22 +106,22 @@ public class UsuarioService {
                         usuario.getDsEmail(),
                         usuario.getFlAtivo()
                 ))
-                .collect(Collectors.toList()) ;
+                .collect(Collectors.toList());
     }
 
     public Optional<UsuarioResponseDto> listarUsuarioNome(String nmCliente){
-       return usuarioRepository.findByNmCliente(nmCliente)
-               .map(usuario -> new UsuarioResponseDto(
-                       usuario.getNmCliente(),
-                       usuario.getNuCPF(),
-                       usuario.getNuTelefone(),
-                       usuario.getDsCidade(),
-                       usuario.getDsEstado(),
-                       usuario.getDsEndereco(),
-                       usuario.getNuEndereco(),
-                       usuario.getDsEmail(),
-                       usuario.getFlAtivo()
-               ));
+        return usuarioRepository.findByNmCliente(nmCliente)
+                .map(usuario -> new UsuarioResponseDto(
+                        usuario.getNmCliente(),
+                        usuario.getNuCPF(),
+                        usuario.getNuTelefone(),
+                        usuario.getDsCidade(),
+                        usuario.getDsEstado(),
+                        usuario.getDsEndereco(),
+                        usuario.getNuEndereco(),
+                        usuario.getDsEmail(),
+                        usuario.getFlAtivo()
+                ));
     }
 
     public Optional<UsuarioResponseDto> listarUsuarioCPF(String nuCPF){
@@ -138,6 +138,4 @@ public class UsuarioService {
                         usuario.getFlAtivo()
                 ));
     }
-
-
 }
