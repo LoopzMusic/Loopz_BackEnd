@@ -70,10 +70,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/estoque/update/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/estoque/listar/**").hasRole("ADMIN")
 
+                        .requestMatchers(HttpMethod.GET, "/feedback/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/feedback/**").hasRole("ADMIN")
+
+
 
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+
+
+
 
     }
 

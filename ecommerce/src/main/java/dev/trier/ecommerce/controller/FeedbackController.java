@@ -1,5 +1,6 @@
 package dev.trier.ecommerce.controller;
 
+import dev.trier.ecommerce.dto.feedback.FeedbackListResponseDto;
 import dev.trier.ecommerce.dto.feedback.FeedbackRequestDto;
 import dev.trier.ecommerce.dto.feedback.FeedbackResponseDto;
 import dev.trier.ecommerce.exceptions.RecursoNaoEncontradoException;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/feedback")
@@ -32,7 +35,13 @@ public class FeedbackController {
         }
     }
 
-   @DeleteMapping("/delete/{cdFeednack}")
+    @GetMapping
+    @Operation(summary = "Listar feedbacks", description = "Retorna todos os feedbacks cadastrados")
+    public ResponseEntity<List<FeedbackListResponseDto>> listarTodos() {
+        return ResponseEntity.ok(feedbackService.listarTodos());
+    }
+
+   @DeleteMapping("/delete/{cdFeedback}")
     public ResponseEntity<Void> deletarFeedback(@PathVariable Integer cdFeedback) {
         try{
             feedbackService.removerFeedback(cdFeedback);
