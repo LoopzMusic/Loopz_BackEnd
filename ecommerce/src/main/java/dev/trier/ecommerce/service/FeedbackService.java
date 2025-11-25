@@ -7,11 +7,12 @@ import dev.trier.ecommerce.model.ProdutoModel;
 import dev.trier.ecommerce.model.UsuarioModel;
 import dev.trier.ecommerce.model.acoesUsuario.FeedbackModel;
 import dev.trier.ecommerce.repository.FeedbackRepository;
-import dev.trier.ecommerce.repository.ProdutoRespository;
+import dev.trier.ecommerce.repository.ProdutoRepository;
 import dev.trier.ecommerce.repository.UsuarioRepository;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +23,7 @@ public class FeedbackService {
 
     private final FeedbackRepository feedbackRepository;
     private final UsuarioRepository usuarioRepository;
-    private final ProdutoRespository produtoRespository;
+    private final ProdutoRepository produtoRespository;
 
     @Transactional
     public FeedbackResponseDto criarFeedback(FeedbackRequestDto dto) {
@@ -49,30 +50,26 @@ public class FeedbackService {
 
         FeedbackModel salvo = feedbackRepository.save(feedback);
 
-        FeedbackResponseDto response = new FeedbackResponseDto();
-        response.setCdFeedback(salvo.getCdFeedBack());
-        response.setNuAvaliacao(salvo.getNuAvaliacao());
-        response.setDsComentario(salvo.getDsComentario());
-        response.setCdUsuario(salvo.getUsuario().getCdUsuario());
-        response.setNmUsuario(salvo.getUsuario().getNmCliente());
-        response.setCdProduto(salvo.getProduto().getCdProduto());
-        response.setNmProduto(salvo.getProduto().getNmProduto());
-
-
-        return response;
+        return new FeedbackResponseDto(
+                salvo.getCdFeedBack(),
+                salvo.getNuAvaliacao(),
+                salvo.getDsComentario(),
+                salvo.getUsuario().getCdUsuario(),
+                salvo.getUsuario().getNmCliente(),
+                salvo.getProduto().getCdProduto(),
+                salvo.getProduto().getNmProduto()
+        );
     }
 
     public List<FeedbackListResponseDto> listarTodos() {
         return feedbackRepository.findAll().stream()
-                .map(model -> {
-                    FeedbackListResponseDto dto = new FeedbackListResponseDto();
-                    dto.setCdFeedback(model.getCdFeedBack());
-                    dto.setNuAvaliacao(model.getNuAvaliacao());
-                    dto.setDsComentario(model.getDsComentario());
-                    dto.setNmUsuario(model.getUsuario().getNmCliente());
-                    dto.setNmProduto(model.getProduto().getNmProduto());
-                    return dto;
-                })
+                .map(model -> new FeedbackListResponseDto(
+                        model.getCdFeedBack(),
+                        model.getNuAvaliacao(),
+                        model.getDsComentario(),
+                        model.getUsuario().getNmCliente(),
+                        model.getProduto().getNmProduto()
+                ))
                 .collect(Collectors.toList());
     }
 
@@ -80,17 +77,15 @@ public class FeedbackService {
         FeedbackModel model = feedbackRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Feedback não encontrado"));
 
-        FeedbackResponseDto response = new FeedbackResponseDto();
-        response.setCdFeedback(model.getCdFeedBack());
-        response.setNuAvaliacao(model.getNuAvaliacao());
-        response.setDsComentario(model.getDsComentario());
-        response.setCdUsuario(model.getUsuario().getCdUsuario());
-        response.setNmUsuario(model.getUsuario().getNmCliente());
-        response.setCdProduto(model.getProduto().getCdProduto());
-        response.setNmProduto(model.getProduto().getNmProduto());
-
-
-        return response;
+        return new FeedbackResponseDto(
+                model.getCdFeedBack(),
+                model.getNuAvaliacao(),
+                model.getDsComentario(),
+                model.getUsuario().getCdUsuario(),
+                model.getUsuario().getNmCliente(),
+                model.getProduto().getCdProduto(),
+                model.getProduto().getNmProduto()
+        );
     }
 
     public List<FeedbackListResponseDto> listarPorProduto(Integer cdProduto) {
@@ -99,15 +94,13 @@ public class FeedbackService {
         }
 
         return feedbackRepository.findByProduto_CdProduto(cdProduto).stream()
-                .map(model -> {
-                    FeedbackListResponseDto dto = new FeedbackListResponseDto();
-                    dto.setCdFeedback(model.getCdFeedBack());
-                    dto.setNuAvaliacao(model.getNuAvaliacao());
-                    dto.setDsComentario(model.getDsComentario());
-                    dto.setNmUsuario(model.getUsuario().getNmCliente());
-                    dto.setNmProduto(model.getProduto().getNmProduto());
-                    return dto;
-                })
+                .map(model -> new FeedbackListResponseDto(
+                        model.getCdFeedBack(),
+                        model.getNuAvaliacao(),
+                        model.getDsComentario(),
+                        model.getUsuario().getNmCliente(),
+                        model.getProduto().getNmProduto()
+                ))
                 .collect(Collectors.toList());
     }
 
@@ -117,15 +110,13 @@ public class FeedbackService {
         }
 
         return feedbackRepository.findByUsuario_CdUsuario(cdUsuario).stream()
-                .map(model -> {
-                    FeedbackListResponseDto dto = new FeedbackListResponseDto();
-                    dto.setCdFeedback(model.getCdFeedBack());
-                    dto.setNuAvaliacao(model.getNuAvaliacao());
-                    dto.setDsComentario(model.getDsComentario());
-                    dto.setNmUsuario(model.getUsuario().getNmCliente());
-                    dto.setNmProduto(model.getProduto().getNmProduto());
-                    return dto;
-                })
+                .map(model -> new FeedbackListResponseDto(
+                        model.getCdFeedBack(),
+                        model.getNuAvaliacao(),
+                        model.getDsComentario(),
+                        model.getUsuario().getNmCliente(),
+                        model.getProduto().getNmProduto()
+                ))
                 .collect(Collectors.toList());
     }
 

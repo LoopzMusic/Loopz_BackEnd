@@ -32,7 +32,7 @@ public class FeedbackController {
         }
     }
 
-   @DeleteMapping("/delete/{cdFeednack}")
+   @DeleteMapping("/delete/{cdFeedback}")
     public ResponseEntity<Void> deletarFeedback(@PathVariable Integer cdFeedback) {
         try{
             feedbackService.removerFeedback(cdFeedback);
