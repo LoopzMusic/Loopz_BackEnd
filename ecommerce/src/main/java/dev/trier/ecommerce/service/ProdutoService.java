@@ -31,7 +31,7 @@ import dev.trier.ecommerce.repository.ItemPedidoRepository;
 @Service
 public class ProdutoService {
 
-    private final ProdutoRepository produtoRespository;
+    private final ProdutoRepository produtoRepository;
     private final EmpresaRepository empresaRepository;
     private final ItemPedidoRepository itemPedidoRepository;
     private final EstoqueRepository estoqueRepository;
@@ -58,7 +58,7 @@ public class ProdutoService {
                 throw new RuntimeException("Erro ao processar imagem do produto", e);
             }
         }
-        ProdutoModel salvo = produtoRespository.save(produtoModel);
+        ProdutoModel salvo = produtoRepository.save(produtoModel);
         return new CriarProdutoResponseDto(
                 salvo.getCdProduto(),
                 salvo.getNmProduto(),
@@ -72,7 +72,7 @@ public class ProdutoService {
 
 
     public List<ListarProdutosResponseDto> listarProdutos() {
-        return produtoRespository.findAll()
+        return produtoRepository.findAll()
                 .stream()
                 .map(produto -> {
                     int qtdEstoque = Stream.ofNullable(produto.getEstoques())
@@ -96,14 +96,14 @@ public class ProdutoService {
     }
 
     public ProdutoModel buscarProdutoPorId(Integer cdProduto) {
-        return produtoRespository.findByCdProduto(cdProduto)
+        return produtoRepository.findByCdProduto(cdProduto)
                 .orElseThrow(
                         () -> new RuntimeException("Produto não encontrado"));
     }
 
     @Transactional(readOnly = true)
     public ListarProdutoDetalhadoResponseDto buscarProdutoPorIdMaisDetalhes(Integer cdProduto) {
-        ProdutoModel produto = produtoRespository.findByCdProduto(cdProduto)
+        ProdutoModel produto = produtoRepository.findByCdProduto(cdProduto)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + cdProduto));
 
         int qtdEstoque = Optional.ofNullable(produto.getEstoques())
@@ -127,7 +127,7 @@ public class ProdutoService {
 
 
     public Optional<ProdutoIdResponseDto> buscarProdutoId(Integer cdProduto) {
-        return produtoRespository.findByCdProduto(cdProduto)
+        return produtoRepository.findByCdProduto(cdProduto)
                 .map(produto -> new ProdutoIdResponseDto(
                         produto.getNmProduto(),
                         produto.getVlProduto(),
@@ -139,7 +139,7 @@ public class ProdutoService {
 
     @Transactional
     public ProdutoTextUpdateResponseDto atualizarProdutoTexto(ProdutoTextUpdateDto updateProdutoDto, Integer cdProduto) {
-        ProdutoModel produtoModel = produtoRespository.findByCdProduto(cdProduto)
+        ProdutoModel produtoModel = produtoRepository.findByCdProduto(cdProduto)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + cdProduto));
 
         if (updateProdutoDto.getNmProduto() != null) {
@@ -152,7 +152,7 @@ public class ProdutoService {
             produtoModel.setDsProduto(updateProdutoDto.getDsProduto());
         }
 
-        ProdutoModel salvo = produtoRespository.save(produtoModel);
+        ProdutoModel salvo = produtoRepository.save(produtoModel);
         return new ProdutoTextUpdateResponseDto(
                 salvo.getNmProduto(),
                 salvo.getVlProduto(),
@@ -160,23 +160,24 @@ public class ProdutoService {
         );
     }
 
-    @Transactional
-    public void atualizarImagemProduto(Integer cdProduto, MultipartFile imgProduto) {
-        ProdutoModel produtoModel = produtoRespository.findByCdProduto(cdProduto)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + cdProduto));
-
-        if (imgProduto != null && !imgProduto.isEmpty()) {
-            try {
-                produtoModel.setImgProduto(imgProduto.getBytes());
-                produtoRespository.save(produtoModel);
-            } catch (IOException e) {
-                throw new RuntimeException("Erro ao processar imagem do produto", e);
-            }
-        }
-    }
+//    @Transactional
+//    public void atualizarImagemProduto(Integer cdProduto, MultipartFile imgProduto) {
+//
+//        ProdutoModel produtoModel = produtoRepository.findByCdProduto(cdProduto)
+//                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + cdProduto));
+//
+//        if (imgProduto != null && !imgProduto.isEmpty()) {
+//            try {
+//                produtoModel.setImgProduto(imgProduto.getBytes());
+//                produtoRepository.save(produtoModel);
+//            } catch (IOException e) {
+//                throw new RuntimeException("Erro ao processar imagem do produto", e);
+//            }
+//        }
+//    }
 
     public Optional<ProdutoNomeResponseDto> listarProdutoNome(String nmProduto) {
-        return produtoRespository.findByNmProduto(nmProduto)
+        return produtoRepository.findByNmProduto(nmProduto)
                 .map(produto -> new ProdutoNomeResponseDto(
                         produto.getNmProduto(),
                         produto.getVlProduto(),
@@ -193,7 +194,7 @@ public class ProdutoService {
             throw new EntityInUseException("Produto já está presente em um ItemPedido e não pode ser excluído.");
         }
 
-        produtoRespository.deleteById(cdProduto);
+        produtoRepository.deleteById(cdProduto);
     }
 
 }

@@ -10,7 +10,7 @@ SELECT
 FROM tbitempedido ip
          JOIN tbproduto p ON p.cd_Produto = ip.cd_Produto
          JOIN tbpedido pe ON pe.cd_Pedido = ip.cd_Pedido
-WHERE pe.status_pedido IN ('ANDAMENTO', 'FINALIZADO')
+WHERE pe.status_pedido IN ('FINALIZADO')
 GROUP BY p.cd_Produto, p.nm_Produto
 ORDER BY total_vendido DESC;
 
