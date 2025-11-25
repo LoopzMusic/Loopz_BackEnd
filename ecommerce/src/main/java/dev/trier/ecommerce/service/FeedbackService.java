@@ -10,21 +10,21 @@ import dev.trier.ecommerce.repository.FeedbackRepository;
 import dev.trier.ecommerce.repository.ProdutoRepository;
 import dev.trier.ecommerce.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class FeedbackService {
 
     private final FeedbackRepository feedbackRepository;
     private final UsuarioRepository usuarioRepository;
     private final ProdutoRepository produtoRepository;
 
-    @Transactional
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public FeedbackResponseDto criarFeedback(FeedbackRequestDto dto) {
 
         if (dto.nuAvaliacao() < 1 || dto.nuAvaliacao() > 5) {
