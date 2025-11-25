@@ -1,5 +1,6 @@
 package dev.trier.ecommerce.model.acoesUsuario;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.trier.ecommerce.model.ProdutoModel;
 import dev.trier.ecommerce.model.UsuarioModel;
 import jakarta.persistence.*;
@@ -22,10 +23,12 @@ public class FavoritosModel {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "cdUsuario", nullable = false)
+    @JsonIgnore
     private UsuarioModel usuario;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "cdProduto", nullable = false)
+    @JsonIgnore
     private ProdutoModel produto;
 
 
