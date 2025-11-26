@@ -31,8 +31,4 @@ public class FavoritosModel {
     @JsonIgnore
     private ProdutoModel produto;
 
-
-    private Integer nuAvaliacao;
-
-
 }
