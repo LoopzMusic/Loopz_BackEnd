@@ -8,6 +8,4 @@ public enum CategoriaProduto {
     SOPRO,
     PERCUSSAO;
 
-
-
 }

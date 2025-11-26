@@ -38,6 +38,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
 
+                        .requestMatchers(HttpMethod.POST, "/api/pagamento/criar").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/pagamento/webhook").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/pagamento/**").authenticated()
+
                         .requestMatchers(HttpMethod.GET, "/produto/{cdProduto}/imagem").permitAll()
                         .requestMatchers(HttpMethod.GET, "/produto/listar/todos").permitAll()
                         .requestMatchers(HttpMethod.POST, "/produto/criar").hasRole("ADMIN")
