@@ -23,7 +23,7 @@ public class FavoritosController {
     private final FavoritosService favoritosService;
 
     @Operation(summary = "Favoritar produto", description = "Favorita um produto para um usuário")
-    @PostMapping
+    @PostMapping("/favoritar")
     public ResponseEntity<FavoritosResponseDto> favoritar(@RequestBody @Valid FavoritosCriarDto dto) {
         FavoritosResponseDto response = favoritosService.favoritar(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
