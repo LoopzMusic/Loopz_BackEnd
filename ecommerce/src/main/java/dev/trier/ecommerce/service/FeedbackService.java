@@ -26,27 +26,27 @@ public class FeedbackService {
     private final ProdutoRepository produtoRespository;
 
     @Transactional
-    public FeedbackResponseDto criarFeedback(FeedbackRequestDto dto) {
+    public FeedbackResponseDto criarFeedback(FeedbackRequestDto feedbackCriarDto) {
 
-        if (dto.nuAvaliacao() < 1 || dto.nuAvaliacao() > 5) {
+        if (feedbackCriarDto.nuAvaliacao() < 1 || feedbackCriarDto.nuAvaliacao() > 5) {
             throw new IllegalArgumentException("Avaliação deve estar entre 1 a 5 estrelas");
         }
 
-        if (dto.dsComentario() != null && dto.dsComentario().length() > 500) {
+        if (feedbackCriarDto.dsComentario() != null && feedbackCriarDto.dsComentario().length() > 500) {
             throw new IllegalArgumentException("Comentário não pode ter mais de 500 caracteres");
         }
 
-        UsuarioModel usuario = usuarioRepository.findById(dto.cdUsuario())
+        UsuarioModel usuario = usuarioRepository.findById(feedbackCriarDto.cdUsuario())
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
-        ProdutoModel produto = produtoRespository.findById(dto.cdProduto())
+        ProdutoModel produto = produtoRespository.findById(feedbackCriarDto.cdProduto())
                 .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
 
         FeedbackModel feedback = new FeedbackModel();
         feedback.setUsuario(usuario);
         feedback.setProduto(produto);
-        feedback.setNuAvaliacao(dto.nuAvaliacao());
-        feedback.setDsComentario(dto.dsComentario());
+        feedback.setNuAvaliacao(feedbackCriarDto.nuAvaliacao());
+        feedback.setDsComentario(feedbackCriarDto.dsComentario());
 
         FeedbackModel salvo = feedbackRepository.save(feedback);
 
@@ -61,7 +61,7 @@ public class FeedbackService {
         );
     }
 
-    public List<FeedbackListResponseDto> listarTodos() {
+    public List<FeedbackListResponseDto> listarFeedback() {
         return feedbackRepository.findAll().stream()
                 .map(model -> new FeedbackListResponseDto(
                         model.getCdFeedBack(),
@@ -88,6 +88,7 @@ public class FeedbackService {
         );
     }
 
+    @Transactional(readOnly = true)
     public List<FeedbackListResponseDto> listarPorProduto(Integer cdProduto) {
         if (!produtoRespository.existsById(cdProduto)) {
             throw new IllegalArgumentException("Produto não encontrado");

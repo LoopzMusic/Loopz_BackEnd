@@ -1,9 +1,9 @@
 package dev.trier.ecommerce.controller;
 
+import dev.trier.ecommerce.dto.feedback.FeedbackListResponseDto;
 import dev.trier.ecommerce.dto.feedback.FeedbackRequestDto;
 import dev.trier.ecommerce.dto.feedback.FeedbackResponseDto;
 import dev.trier.ecommerce.exceptions.RecursoNaoEncontradoException;
-import dev.trier.ecommerce.model.acoesUsuario.FeedbackModel;
 import dev.trier.ecommerce.service.FeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/feedback")
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class FeedbackController {
 
     private final FeedbackService feedbackService;
 
-    @PostMapping
+    @PostMapping("/criar/NovoFeedback")
     @Operation(summary = "Criar feedback", description = "Cria uma nova avaliação de produto")
     public ResponseEntity<FeedbackResponseDto> criarFeedback(@Valid @RequestBody FeedbackRequestDto FeedbackDto) {
         try {
@@ -31,8 +33,25 @@ public class FeedbackController {
             return ResponseEntity.badRequest().build();
         }
     }
+    @GetMapping("/listar/TodosFeedback")
+    @Operation(summary = "listar feedback", description = "Listar todos os feedbacks")
+    public ResponseEntity<List<FeedbackListResponseDto>> listarFeedback() {
+        var lista = feedbackService.listarFeedback();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(lista);
+    }
+    @GetMapping("/listar/FeedbackPorProduto")
+    @Operation(summary = "Listar feedbacks do produto", description = "Retorna todos os feedbacks associados a um produto pelo código")
+    public ResponseEntity<List<FeedbackListResponseDto>> listarFeedbackPorProduto(
+            @PathVariable Integer cdProduto) {
 
-   @DeleteMapping("/delete/{cdFeedback}")
+        var lista = feedbackService.listarPorProduto(cdProduto);
+        return ResponseEntity.ok(lista);
+    }
+
+
+    @DeleteMapping("/delete/{cdFeedback}")
     public ResponseEntity<Void> deletarFeedback(@PathVariable Integer cdFeedback) {
         try{
             feedbackService.removerFeedback(cdFeedback);
