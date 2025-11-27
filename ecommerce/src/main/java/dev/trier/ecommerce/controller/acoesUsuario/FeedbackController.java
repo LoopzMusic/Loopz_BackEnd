@@ -1,4 +1,4 @@
-package dev.trier.ecommerce.controller;
+package dev.trier.ecommerce.controller.acoesUsuario;
 
 import dev.trier.ecommerce.dto.feedback.FeedbackListResponseDto;
 import dev.trier.ecommerce.dto.feedback.FeedbackRequestDto;
@@ -23,7 +23,7 @@ public class FeedbackController {
 
     private final FeedbackService feedbackService;
 
-    @PostMapping("/criar/NovoFeedback")
+    @PostMapping("/criar/novoFeedback")
     @Operation(summary = "Criar feedback", description = "Cria uma nova avaliação de produto")
     public ResponseEntity<FeedbackResponseDto> criarFeedback(@Valid @RequestBody FeedbackRequestDto FeedbackDto) {
         try {
@@ -33,7 +33,7 @@ public class FeedbackController {
             return ResponseEntity.badRequest().build();
         }
     }
-    @GetMapping("/listar/TodosFeedback")
+    @GetMapping("/listar/todos")
     @Operation(summary = "listar feedback", description = "Listar todos os feedbacks")
     public ResponseEntity<List<FeedbackListResponseDto>> listarFeedback() {
         var lista = feedbackService.listarFeedback();
@@ -41,7 +41,7 @@ public class FeedbackController {
                 .status(HttpStatus.OK)
                 .body(lista);
     }
-    @GetMapping("/listar/FeedbackPorProduto")
+    @GetMapping("/listar/produto")
     @Operation(summary = "Listar feedbacks do produto", description = "Retorna todos os feedbacks associados a um produto pelo código")
     public ResponseEntity<List<FeedbackListResponseDto>> listarFeedbackPorProduto(
             @PathVariable Integer cdProduto) {
