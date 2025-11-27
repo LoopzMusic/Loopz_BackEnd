@@ -8,6 +8,7 @@ import dev.trier.ecommerce.dto.produto.response.ProdutoTextUpdateDto;
 import dev.trier.ecommerce.dto.produto.criacao.ProdutoCriarDto;
 import dev.trier.ecommerce.exceptions.RecursoNaoEncontradoException;
 import dev.trier.ecommerce.model.EmpresaModel;
+import dev.trier.ecommerce.model.EstoqueModel;
 import dev.trier.ecommerce.model.ProdutoModel;
 import dev.trier.ecommerce.model.enums.CategoriaProduto;
 import dev.trier.ecommerce.repository.EmpresaRepository;
@@ -142,39 +143,92 @@ public class ProdutoService {
         ProdutoModel produtoModel = produtoRepository.findByCdProduto(cdProduto)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + cdProduto));
 
-        if (updateProdutoDto.getNmProduto() != null) {
-            produtoModel.setNmProduto(updateProdutoDto.getNmProduto());
+        if (updateProdutoDto.nmProduto() != null) {
+            produtoModel.setNmProduto(updateProdutoDto.nmProduto());
         }
-        if (updateProdutoDto.getVlProduto() != null) {
-            produtoModel.setVlProduto(updateProdutoDto.getVlProduto());
+        if (updateProdutoDto.vlProduto() != null) {
+            produtoModel.setVlProduto(updateProdutoDto.vlProduto());
         }
-        if (updateProdutoDto.getDsProduto() != null) {
-            produtoModel.setDsProduto(updateProdutoDto.getDsProduto());
+        if (updateProdutoDto.dsProduto() != null) {
+            produtoModel.setDsProduto(updateProdutoDto.dsProduto());
         }
 
+
+        if (updateProdutoDto.dsCategoria() != null) {
+            try {
+                produtoModel.setDsCategoria(CategoriaProduto.valueOf(updateProdutoDto.dsCategoria()));
+            } catch (IllegalArgumentException ex) {
+                throw new RecursoNaoEncontradoException("Categoria inválida: " + updateProdutoDto.dsCategoria());
+            }
+        }
+
+        if (updateProdutoDto.dsAcessorio() != null && !updateProdutoDto.dsAcessorio().isEmpty()) {
+            produtoModel.setDsAcessorio(updateProdutoDto.dsAcessorio().charAt(0));
+        }
+
+
+        if (updateProdutoDto.cdEmpresa() != null) {
+            EmpresaModel empresaModel = empresaRepository.findById(updateProdutoDto.cdEmpresa())
+                    .orElseThrow(() -> new RecursoNaoEncontradoException("Empresa não encontrada: " + updateProdutoDto.cdEmpresa()));
+            produtoModel.setEmpresa(empresaModel);
+        }
+
+
         ProdutoModel salvo = produtoRepository.save(produtoModel);
+
+        Integer qtdEstoqueAtual = null;
+
+        if (updateProdutoDto.qtdEstoque() != null) {
+            EstoqueModel estoque = estoqueRepository.findByProduto_CdProduto(cdProduto);
+            if (estoque == null) {
+                estoque = new EstoqueModel();
+                estoque.setProduto(salvo);
+                estoque.setFlAtivo("S");
+            }
+            estoque.setQtdEstoqueProduto(updateProdutoDto.qtdEstoque());
+            EstoqueModel salvoEstoque = estoqueRepository.save(estoque);
+            qtdEstoqueAtual = salvoEstoque.getQtdEstoqueProduto();
+        } else {
+
+            EstoqueModel estoqueExistente = estoqueRepository.findByProduto_CdProduto(cdProduto);
+            qtdEstoqueAtual = estoqueExistente != null ? estoqueExistente.getQtdEstoqueProduto() : 0;
+        }
+
         return new ProdutoTextUpdateResponseDto(
                 salvo.getNmProduto(),
                 salvo.getVlProduto(),
-                salvo.getDsProduto()
+                salvo.getDsProduto(),
+                salvo.getDsCategoria() != null ? salvo.getDsCategoria().name() : null,
+                String.valueOf(salvo.getDsAcessorio()),
+                salvo.getEmpresa() != null ? salvo.getEmpresa().getCdEmpresa() : null,
+                qtdEstoqueAtual
         );
     }
 
-//    @Transactional
-//    public void atualizarImagemProduto(Integer cdProduto, MultipartFile imgProduto) {
-//
-//        ProdutoModel produtoModel = produtoRepository.findByCdProduto(cdProduto)
-//                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + cdProduto));
-//
-//        if (imgProduto != null && !imgProduto.isEmpty()) {
-//            try {
-//                produtoModel.setImgProduto(imgProduto.getBytes());
-//                produtoRepository.save(produtoModel);
-//            } catch (IOException e) {
-//                throw new RuntimeException("Erro ao processar imagem do produto", e);
-//            }
-//        }
-//    }
+    @Transactional
+    public void atualizarImagemProduto(Integer cdProduto, MultipartFile imgProduto) {
+        ProdutoModel produtoModel = produtoRepository.findByCdProduto(cdProduto)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + cdProduto));
+
+        if (imgProduto == null || imgProduto.isEmpty()) {
+            throw new IllegalArgumentException("Imagem inválida ou vazia.");
+        }
+
+        try {
+            produtoModel.setImgProduto(imgProduto.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao processar imagem do produto", e);
+        }
+
+        produtoRepository.save(produtoModel);
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] buscarImagemProduto(Integer cdProduto) {
+        ProdutoModel produtoModel = produtoRepository.findByCdProduto(cdProduto)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado: " + cdProduto));
+        return produtoModel.getImgProduto();
+    }
 
     public Optional<ProdutoNomeResponseDto> listarProdutoNome(String nmProduto) {
         return produtoRepository.findByNmProduto(nmProduto)
