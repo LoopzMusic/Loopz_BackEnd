@@ -25,21 +25,21 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @CrossOrigin
+
     @GetMapping(path = "/listar/usuarios")
     @Operation(summary = "Listar usuários", description = "Lista todos os usuários cadastrados")
     public ResponseEntity<List<UsuarioResponseDto>> listarUsuarios() {
         return ResponseEntity.ok().body(usuarioService.listarUsuarios());
     }
 
-    @CrossOrigin
+
     @GetMapping("/buscar/{cdCliente}")
     @Operation(summary = "Buscar usuário por código", description = "Retorna os dados do usuário pelo código informado")
     public Optional<UsuarioResponseDto>  listarCdUsuario(@PathVariable Integer cdCliente) {
         return usuarioService.listarCdUsuario(cdCliente);
     }
 
-    @CrossOrigin
+
     @GetMapping("/nome/{nmCliente}")
     @Operation(summary = "Buscar usuário por nome", description = "Retorna os dados do usuário pelo nome informado")
     public ResponseEntity<?> listarUsuarioNome(@PathVariable String nmCliente) {
