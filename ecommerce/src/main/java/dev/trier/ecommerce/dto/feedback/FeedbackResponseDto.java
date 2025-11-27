@@ -6,7 +6,7 @@ public record FeedbackResponseDto(
      Integer nuAvaliacao,
      String dsComentario,
      Integer cdUsuario,
-     String nmUsuario,
+     String nmCliente,
      Integer cdProduto,
      String nmProduto
 ) {
