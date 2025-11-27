@@ -1,5 +1,7 @@
 package dev.trier.ecommerce.dto.feedback;
 
+import java.time.LocalDate;
+
 public record FeedbackResponseDto(
 
      Integer cdFeedback,
@@ -8,7 +10,8 @@ public record FeedbackResponseDto(
      Integer cdUsuario,
      String nmCliente,
      Integer cdProduto,
-     String nmProduto
+     String nmProduto,
+     LocalDate dtCriacao
 ) {
 }
 
