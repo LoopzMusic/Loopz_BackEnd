@@ -45,6 +45,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/produto/{cdProduto}/detalhes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/produto/{nmProduto}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,"/recomendacao/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/feedback/listar/{cdProduto}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/feedback/listar/todos").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET,"/usuario/buscar/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/usuario/listar/usuarios").hasRole("ADMIN")

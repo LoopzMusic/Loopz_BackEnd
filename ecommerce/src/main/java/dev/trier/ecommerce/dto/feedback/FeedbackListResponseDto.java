@@ -12,6 +12,6 @@ public class FeedbackListResponseDto {
     private Integer cdFeedback;
     private Integer nuAvaliacao;
     private String dsComentario;
-    private String nmUsuario;
+    private String nmCliente;
     private String nmProduto;
 }

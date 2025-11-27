@@ -19,11 +19,12 @@ import java.util.List;
 @RequestMapping("/feedback")
 @RequiredArgsConstructor
 @Tag(name = "Feedback", description = "Endpoints para gerenciar avaliações de produtos")
+@CrossOrigin("*")
 public class FeedbackController {
 
     private final FeedbackService feedbackService;
 
-    @PostMapping("/criar/novoFeedback")
+    @PostMapping("/criar/novofeedback")
     @Operation(summary = "Criar feedback", description = "Cria uma nova avaliação de produto")
     public ResponseEntity<FeedbackResponseDto> criarFeedback(@Valid @RequestBody FeedbackRequestDto FeedbackDto) {
         try {
@@ -41,7 +42,7 @@ public class FeedbackController {
                 .status(HttpStatus.OK)
                 .body(lista);
     }
-    @GetMapping("/listar/produto")
+    @GetMapping("/listar/{cdProduto}")
     @Operation(summary = "Listar feedbacks do produto", description = "Retorna todos os feedbacks associados a um produto pelo código")
     public ResponseEntity<List<FeedbackListResponseDto>> listarFeedbackPorProduto(
             @PathVariable Integer cdProduto) {
