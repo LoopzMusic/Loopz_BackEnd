@@ -9,13 +9,7 @@ import dev.trier.ecommerce.model.acoesUsuario.FeedbackModel;
 import dev.trier.ecommerce.repository.FeedbackRepository;
 import dev.trier.ecommerce.repository.ProdutoRepository;
 import dev.trier.ecommerce.repository.UsuarioRepository;
-<<<<<<< HEAD
-
-import lombok.RequiredArgsConstructor;
-=======
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
->>>>>>> 837cf07c6a9f86f76d8b3f855c94bfcfec2adb23
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,17 +22,10 @@ public class FeedbackService {
 
     private final FeedbackRepository feedbackRepository;
     private final UsuarioRepository usuarioRepository;
-<<<<<<< HEAD
-    private final ProdutoRepository produtoRespository;
+    private final ProdutoRepository produtoRepository;
 
     @Transactional
     public FeedbackResponseDto criarFeedback(FeedbackRequestDto feedbackCriarDto) {
-=======
-    private final ProdutoRepository produtoRepository;
-
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    public FeedbackResponseDto criarFeedback(FeedbackRequestDto dto) {
->>>>>>> 837cf07c6a9f86f76d8b3f855c94bfcfec2adb23
 
         if (feedbackCriarDto.nuAvaliacao() < 1 || feedbackCriarDto.nuAvaliacao() > 5) {
             throw new IllegalArgumentException("Avaliação deve estar entre 1 a 5 estrelas");
@@ -51,11 +38,7 @@ public class FeedbackService {
         UsuarioModel usuario = usuarioRepository.findById(feedbackCriarDto.cdUsuario())
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
-<<<<<<< HEAD
-        ProdutoModel produto = produtoRespository.findById(feedbackCriarDto.cdProduto())
-=======
-        ProdutoModel produto = produtoRepository.findById(dto.cdProduto())
->>>>>>> 837cf07c6a9f86f76d8b3f855c94bfcfec2adb23
+        ProdutoModel produto = produtoRepository.findById(feedbackCriarDto.cdProduto())
                 .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
 
         FeedbackModel feedback = new FeedbackModel();
@@ -77,6 +60,7 @@ public class FeedbackService {
         );
     }
 
+    @Transactional(readOnly = true)
     public List<FeedbackListResponseDto> listarFeedback() {
         return feedbackRepository.findAll().stream()
                 .map(model -> new FeedbackListResponseDto(
@@ -89,6 +73,7 @@ public class FeedbackService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public FeedbackResponseDto buscarPorId(Integer id) {
         FeedbackModel model = feedbackRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Feedback não encontrado"));
@@ -121,6 +106,7 @@ public class FeedbackService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<FeedbackListResponseDto> listarPorUsuario(Integer cdUsuario) {
         if (!usuarioRepository.existsById(cdUsuario)) {
             throw new IllegalArgumentException("Usuário não encontrado");
