@@ -3,7 +3,7 @@ package dev.trier.ecommerce.model.views;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.Immutable;
-
+@IdClass(ProdutoCompradoJuntoId.class)
 @Getter
 @Entity
 @Immutable
