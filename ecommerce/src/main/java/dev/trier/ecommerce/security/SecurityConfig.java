@@ -40,6 +40,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/google/validate").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/produto/{cdProduto}/imagem").permitAll()
                         .requestMatchers(HttpMethod.GET, "/produto/listar/todos").permitAll()
