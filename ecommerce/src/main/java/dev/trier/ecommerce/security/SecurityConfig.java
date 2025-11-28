@@ -10,10 +10,13 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+
 
 @Configuration
 @EnableWebSecurity
@@ -30,7 +33,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return  http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configure(http))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
@@ -41,7 +44,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/produto/{cdProduto}/imagem").permitAll()
                         .requestMatchers(HttpMethod.GET, "/produto/listar/todos").permitAll()
                         .requestMatchers(HttpMethod.POST, "/produto/criar").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/produto/delete/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/produto/delete/{cdProduto}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/produto/{cdProduto}/detalhes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/produto/{nmProduto}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,"/recomendacao/**").permitAll()
@@ -81,5 +84,21 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+
+        corsConfig.addAllowedOrigin("http://localhost:4200"); // Angular
+        corsConfig.addAllowedHeader("*");
+        corsConfig.addAllowedMethod("*");
+        corsConfig.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfig);
+        return source;
+    }
+
+
 
 }
