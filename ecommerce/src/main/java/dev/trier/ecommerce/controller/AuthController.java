@@ -40,7 +40,7 @@ public class AuthController {
         String token = tokenConfig.generateToken(usuario);
 
 
-        return ResponseEntity.ok(new LoginResponse(token, usuario.getCdUsuario(), usuario.getDsEmail(),usuario.getUserRole()));
+        return ResponseEntity.ok(new LoginResponse(token, usuario.getCdUsuario(), usuario.getNmCliente(), usuario.getDsEmail(),usuario.getUserRole()));
     }
 
     @PostMapping("/register")
