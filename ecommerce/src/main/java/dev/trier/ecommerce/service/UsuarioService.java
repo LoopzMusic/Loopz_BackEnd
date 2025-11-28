@@ -4,6 +4,7 @@ import dev.trier.ecommerce.dto.usuario.criacao.UsuarioCriarDto;
 import dev.trier.ecommerce.dto.usuario.criacao.UsuarioResponseDto;
 import dev.trier.ecommerce.dto.usuario.modificacao.UsuarioUpdateDto;
 import dev.trier.ecommerce.exceptions.RecursoNaoEncontradoException;
+import dev.trier.ecommerce.service.emailCredencialService.EmailService;
 import dev.trier.ecommerce.utils.Utils;
 import dev.trier.ecommerce.model.UsuarioModel;
 import dev.trier.ecommerce.model.enums.UsersRole;
@@ -15,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
