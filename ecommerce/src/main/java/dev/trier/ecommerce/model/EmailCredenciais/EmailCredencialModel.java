@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "email_credenciais")
 public class EmailCredencialModel {
 
     @Id
