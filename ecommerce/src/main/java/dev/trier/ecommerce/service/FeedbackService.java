@@ -56,7 +56,8 @@ public class FeedbackService {
                 salvo.getUsuario().getCdUsuario(),
                 salvo.getUsuario().getNmCliente(),
                 salvo.getProduto().getCdProduto(),
-                salvo.getProduto().getNmProduto()
+                salvo.getProduto().getNmProduto(),
+                salvo.getDtCriacao()
         );
     }
 
@@ -68,7 +69,8 @@ public class FeedbackService {
                         model.getNuAvaliacao(),
                         model.getDsComentario(),
                         model.getUsuario().getNmCliente(),
-                        model.getProduto().getNmProduto()
+                        model.getProduto().getNmProduto(),
+                        model.getDtCriacao()
                 ))
                 .collect(Collectors.toList());
     }
@@ -85,7 +87,9 @@ public class FeedbackService {
                 model.getUsuario().getCdUsuario(),
                 model.getUsuario().getNmCliente(),
                 model.getProduto().getCdProduto(),
-                model.getProduto().getNmProduto()
+                model.getProduto().getNmProduto(),
+                model.getDtCriacao()
+
         );
     }
 
@@ -101,7 +105,8 @@ public class FeedbackService {
                         model.getNuAvaliacao(),
                         model.getDsComentario(),
                         model.getUsuario().getNmCliente(),
-                        model.getProduto().getNmProduto()
+                        model.getProduto().getNmProduto(),
+                        model.getDtCriacao()
                 ))
                 .collect(Collectors.toList());
     }
@@ -118,7 +123,8 @@ public class FeedbackService {
                         model.getNuAvaliacao(),
                         model.getDsComentario(),
                         model.getUsuario().getNmCliente(),
-                        model.getProduto().getNmProduto()
+                        model.getProduto().getNmProduto(),
+                        model.getDtCriacao()
                 ))
                 .collect(Collectors.toList());
     }
