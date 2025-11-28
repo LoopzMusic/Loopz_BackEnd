@@ -7,6 +7,7 @@ import dev.trier.ecommerce.dto.carrinho.response.CarrinhoResponseDto;
 import dev.trier.ecommerce.exceptions.RecursoNaoEncontradoException;
 import dev.trier.ecommerce.security.JWTUserData;
 import dev.trier.ecommerce.service.CarrinhoService;
+import dev.trier.ecommerce.service.ItemCarrinhoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,6 +26,9 @@ public class CarrinhoController {
 
     @Autowired
     private CarrinhoService carrinhoService;
+
+    @Autowired
+    private ItemCarrinhoService itemCarrinhoService;
 
     @GetMapping("/meu-carrinho")
     @Operation(summary = "Buscar meu carrinho",
@@ -92,6 +96,15 @@ public class CarrinhoController {
                     return ResponseEntity.noContent().<Void>build();
                 })
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Remover item do carrinho",
+            description = "Remove um item específico de um carrinho pelo código do item")
+    @DeleteMapping("/{cdCarrinho}/itens/{cdItemCarrinho}")
+    public ResponseEntity<Void> removerItemDoCarrinho(@PathVariable Integer cdCarrinho,
+                                                       @PathVariable Integer cdItemCarrinho) {
+        itemCarrinhoService.removerItemDoCarrinho(cdCarrinho, cdItemCarrinho);
+        return ResponseEntity.noContent().build();
     }
 
     private Integer extrairCdUsuario(Authentication authentication) {
