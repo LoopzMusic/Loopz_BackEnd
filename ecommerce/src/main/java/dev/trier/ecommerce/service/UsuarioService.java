@@ -43,15 +43,16 @@ public class UsuarioService {
 
         return new UsuarioResponseDto(
                 salvo.getNmCliente(),
-                salvo.getDsEmail(),
+                salvo.getNuCPF(),
                 salvo.getNuTelefone(),
                 salvo.getDsCidade(),
-                salvo.getNuCPF(),
-                salvo.getNuEndereco(),
-                salvo.getDsEndereco(),
                 salvo.getDsEstado(),
+                salvo.getDsEndereco(),
+                salvo.getNuEndereco(),
+                salvo.getDsEmail(),
                 salvo.getFlAtivo()
         );
+
     }
 
 
@@ -66,30 +67,32 @@ public class UsuarioService {
 
         return new UsuarioResponseDto(
                 salvo.getNmCliente(),
-                salvo.getDsEmail(),
+                salvo.getNuCPF(),
                 salvo.getNuTelefone(),
                 salvo.getDsCidade(),
-                salvo.getNuCPF(),
-                salvo.getNuEndereco(),
-                salvo.getDsEndereco(),
                 salvo.getDsEstado(),
+                salvo.getDsEndereco(),
+                salvo.getNuEndereco(),
+                salvo.getDsEmail(),
                 salvo.getFlAtivo()
         );
+
     }
 
     public Optional<UsuarioResponseDto> listarCdUsuario(Integer cdUsuario){
         return usuarioRepository.findByCdUsuario(cdUsuario)
                 .map(usuario -> new UsuarioResponseDto(
-                        usuario.getNmCliente(),
-                        usuario.getNuCPF(),
-                        usuario.getNuTelefone(),
-                        usuario.getDsCidade(),
-                        usuario.getDsEstado(),
-                        usuario.getDsEndereco(),
-                        usuario.getNuEndereco(),
-                        usuario.getDsEmail(),
-                        usuario.getFlAtivo()
-                ));
+                                usuario.getNmCliente(),
+                                usuario.getNuCPF(),
+                                usuario.getNuTelefone(),
+                                usuario.getDsCidade(),
+                                usuario.getDsEstado(),
+                                usuario.getDsEndereco(),
+                                usuario.getNuEndereco(),
+                                usuario.getDsEmail(),
+                                usuario.getFlAtivo()
+                        )
+                );
     }
 
     public List<UsuarioResponseDto> listarUsuarios(){
@@ -138,4 +141,31 @@ public class UsuarioService {
                         usuario.getFlAtivo()
                 ));
     }
+    public UsuarioResponseDto atualizarPerfil(Integer cdUsuario, UsuarioCriarDto dto) {
+        UsuarioModel usuario = usuarioRepository.findById(cdUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        usuario.setNmCliente(dto.nmCliente());
+        usuario.setNuCPF(dto.nuCPF());
+        usuario.setNuTelefone(dto.nuTelefone());
+        usuario.setDsEndereco(dto.dsEndereco());
+        usuario.setNuEndereco(dto.nuEndereco());
+        usuario.setDsCidade(dto.dsCidade());
+        usuario.setDsEstado(dto.dsEstado());
+
+        UsuarioModel updated = usuarioRepository.save(usuario);
+        return new UsuarioResponseDto(
+                updated.getNmCliente(),
+                updated.getNuCPF(),
+                updated.getNuTelefone(),
+                updated.getDsCidade(),
+                updated.getDsEstado(),
+                updated.getDsEndereco(),
+                updated.getNuEndereco(),
+                updated.getDsEmail(),
+                updated.getFlAtivo()
+        );
+
+    }
+
 }

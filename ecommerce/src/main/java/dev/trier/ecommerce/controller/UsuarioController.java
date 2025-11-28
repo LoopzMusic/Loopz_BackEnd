@@ -58,4 +58,13 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+    @PutMapping("/{cdUsuario}/perfil")
+    @Operation(summary = "Atualizar perfil do usuário", description = "Atualiza as informações de perfil do usuário")
+    public ResponseEntity<UsuarioResponseDto> updateUserProfile(
+            @PathVariable Integer cdUsuario,
+            @Valid @RequestBody UsuarioCriarDto dto) {
+
+        UsuarioResponseDto updated = usuarioService.atualizarPerfil(cdUsuario, dto);
+        return ResponseEntity.ok(updated);
+    }
 }
