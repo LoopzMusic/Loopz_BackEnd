@@ -45,6 +45,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/pagamento/criar").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/pagamento/webhook").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/pagamento/**").authenticated()
+                        .requestMatchers("/api/v1/abacatepay/**").permitAll()
+                        .requestMatchers("/webhook/abacatepay/**").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/produto/{cdProduto}/imagem").permitAll()
                         .requestMatchers(HttpMethod.GET, "/produto/listar/todos").permitAll()
@@ -80,7 +82,7 @@ public class SecurityConfig {
 
 
 
-                        .requestMatchers(HttpMethod.GET, "/admin/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
 
 
 
