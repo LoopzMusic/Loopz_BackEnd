@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 
 @RestController
@@ -85,6 +87,7 @@ public class ProdutoController {
         byte[] imagem = produtoService.buscarImagemProduto(cdProduto);
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
+                .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS).cachePublic())
                 .body(imagem);
     }
 
