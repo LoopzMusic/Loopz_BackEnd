@@ -4,7 +4,6 @@ import dev.trier.ecommerce.dto.produto.criacao.CriarProdutoResponseDto;
 import dev.trier.ecommerce.dto.produto.response.*;
 import dev.trier.ecommerce.dto.produto.criacao.ProdutoCriarDto;
 import dev.trier.ecommerce.exceptions.RecursoNaoEncontradoException;
-import dev.trier.ecommerce.model.ProdutoModel;
 import dev.trier.ecommerce.service.ProdutoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -58,25 +57,35 @@ public class ProdutoController {
     }
 
 
-//    @PatchMapping(path = "/alterar/{cdProduto}/imagem", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    @Operation(summary = "Atualizar imagem do produto", description = "Atualiza apenas a imagem de um produto")
-//    public ResponseEntity<Void> atualizarImagemProduto(
-//            @PathVariable Integer cdProduto,
-//            @RequestParam("imgProduto") MultipartFile imgProduto) {
-//
-//        produtoService.atualizarImagemProduto(cdProduto, imgProduto);
-//        return ResponseEntity.noContent().build();
-//    }
+    @PatchMapping(path = "/alterar/{cdProduto}/texto", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Atualizar texto do produto", description = "Atualiza apenas os campos de texto do produto (nome, valor, categoria, acessório, descrição e empresa)")
+    public ResponseEntity<ProdutoTextUpdateResponseDto> atualizarProdutoTexto(
+            @PathVariable Integer cdProduto,
+            @RequestBody @Valid ProdutoTextUpdateDto updateProdutoDto) {
+
+        ProdutoTextUpdateResponseDto response = produtoService.atualizarProdutoTexto(updateProdutoDto, cdProduto);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping(path = "/alterar/{cdProduto}/imagem", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Atualizar imagem do produto", description = "Atualiza apenas a imagem de um produto")
+    public ResponseEntity<Void> atualizarImagemProduto(
+            @PathVariable Integer cdProduto,
+            @RequestParam("imgProduto") MultipartFile imgProduto) {
+
+        produtoService.atualizarImagemProduto(cdProduto, imgProduto);
+        return ResponseEntity.noContent().build();
+    }
 
 
     @GetMapping(path = "/{cdProduto}/imagem")
     @Transactional
     @Operation(summary = "Obter imagem do produto", description = "Retorna a imagem do produto em formato JPEG")
     public ResponseEntity<byte[]> listarImagem(@PathVariable Integer cdProduto) {
-        ProdutoModel produto = produtoService.buscarProdutoPorId(cdProduto);
+        byte[] imagem = produtoService.buscarImagemProduto(cdProduto);
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
-                .body(produto.getImgProduto());
+                .body(imagem);
     }
 
 

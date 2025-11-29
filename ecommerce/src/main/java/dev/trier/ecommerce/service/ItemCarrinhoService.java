@@ -79,4 +79,16 @@ public class ItemCarrinhoService {
                 itemSalvo.getQtdItemCarrinho()
         );
     }
+
+    @Transactional
+    public void removerItemDoCarrinho(Integer cdCarrinho, Integer cdItemCarrinho) {
+        ItemCarrinhoModel itemModel = itemCarrinhoRepository.findById(cdItemCarrinho)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Item do carrinho não encontrado: " + cdItemCarrinho));
+
+        if (itemModel.getCarrinho() == null || !itemModel.getCarrinho().getCdCarrinho().equals(cdCarrinho)) {
+            throw new RecursoNaoEncontradoException("Item do carrinho não pertence ao carrinho informado");
+        }
+
+        itemCarrinhoRepository.delete(itemModel);
+    }
 }

@@ -16,7 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.apache.commons.text.StringEscapeUtils;
 
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @AllArgsConstructor
 @Service
@@ -26,7 +30,7 @@ public class ItemPedidoService {
     private final ProdutoRepository produtoRespository;
     private final PedidoRepository pedidoRepository;
     private final EstoqueService estoqueService;
-    private final EmailService emailService; // ...existing code... add EmailService
+    private final EmailService emailService;
 
 
     @Transactional
@@ -49,7 +53,7 @@ public class ItemPedidoService {
 
         ItemPedidoModel salvar=  itemPedidoRepository.save(itemPedidoModel);
 
-        //rever para retirar try/cath devido a verificação do 2auth
+
         try {
             if (pedidoModel != null && pedidoModel.getUsuario() != null && pedidoModel.getUsuario().getDsEmail() != null) {
                 String destinatario = pedidoModel.getUsuario().getDsEmail();
@@ -59,20 +63,37 @@ public class ItemPedidoService {
                 Double valorTotalPedido = pedidoModel.getVlTotalPedido();
 
 
-                StringBuilder emailHtml = new StringBuilder();
-                emailHtml.append("<html><body>");
-                emailHtml.append("<meta charset='UTF-8'>");
-                emailHtml.append("<h3>Seu pedido foi confirmado!</h3>");
-                emailHtml.append(String.format("<p><strong>Produto:</strong> %s</p>", escapeHtml(nmProduto)));
-                emailHtml.append(String.format("<p><strong>Quantidade:</strong> %d</p>", quantidade != null ? quantidade : 0));
-                emailHtml.append(String.format("<p><strong>Valor total do pedido:</strong> R$ %.2f</p>", valorTotalPedido != null ? valorTotalPedido : 0.0));
-                emailHtml.append("<p>Obrigado por comprar conosco! 😊</p>");
-                emailHtml.append("</body></html>");
+                final String emailHtml = String.format(
+                        "<html><body><meta charset='UTF-8'><h3>Seu pedido foi confirmado!</h3>"
+                                + "<p><strong>Produto:</strong> %s</p>"
+                                + "<p><strong>Quantidade:</strong> %d</p>"
+                                + "<p><strong>Valor total do pedido:</strong> R$ %.2f</p>"
+                                + "<p>Obrigado por comprar conosco! 😊</p></body></html>",
+                        escapeHtml(nmProduto),
+                        quantidade != null ? quantidade : 0,
+                        valorTotalPedido != null ? valorTotalPedido : 0.0
+                );
 
-                emailService.enviarEmailHtml(destinatario, assunto, emailHtml.toString());
+
+                TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        try {
+                            CompletableFuture<String> envio = emailService.enviarEmailHtmlAsync(destinatario, assunto, emailHtml);
+                            envio.thenAccept(resultado -> System.out.printf("Envio de email concluído: %s%n", resultado))
+                                  .exceptionally(ex -> {
+                                      System.out.printf("Erro assíncrono ao enviar email: %s%n", ex.getMessage());
+                                      return null;
+                                  });
+                        } catch (Exception ex) {
+                            System.out.printf("Erro ao agendar envio de email: %s%n", ex.getMessage());
+                        }
+                    }
+                });
             }
         } catch (Exception e) {
-            System.out.printf("Erro ao enviar email de confirmação: %s%n", e.getMessage());
+
+            System.out.printf("Erro ao disparar envio de email de confirmação: %s%n", e.getMessage());
         }
 
         return new ItemPedidoCriadoRespostaDto(
@@ -85,7 +106,7 @@ public class ItemPedidoService {
         );
     }
 
-    private Object escapeHtml(String nmProduto) {
+    private String escapeHtml(String nmProduto) {
         return StringEscapeUtils.escapeHtml4(nmProduto);
     }
 

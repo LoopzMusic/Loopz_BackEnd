@@ -1,5 +1,6 @@
 package dev.trier.ecommerce.controller;
 
+import dev.trier.ecommerce.dto.auth.GoogleTokenValidationRequest;
 import dev.trier.ecommerce.dto.auth.LoginRequest;
 import dev.trier.ecommerce.dto.auth.LoginResponse;
 import dev.trier.ecommerce.dto.usuario.criacao.UsuarioCriarDto;
@@ -7,11 +8,13 @@ import dev.trier.ecommerce.dto.usuario.criacao.UsuarioResponseDto;
 import dev.trier.ecommerce.model.UsuarioModel;
 import dev.trier.ecommerce.repository.UsuarioRepository;
 import dev.trier.ecommerce.security.TokenConfig;
+import dev.trier.ecommerce.service.GoogleOAuth2Service;
 import dev.trier.ecommerce.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +32,7 @@ public class AuthController {
     private final TokenConfig tokenConfig;
     private final UsuarioRepository usuarioRepository;
     private final UsuarioService usuarioService;
+    private final GoogleOAuth2Service googleOAuth2Service;
 
     @PostMapping("/login")
     @Operation(summary = "Login do usuário", description = "Realiza a autenticação do usuário e retorna um token JWT")
@@ -39,8 +43,15 @@ public class AuthController {
         UsuarioModel usuario = usuarioRepository.findByDsEmail(request.dsEmail()).orElseThrow();
         String token = tokenConfig.generateToken(usuario);
 
-
-        return ResponseEntity.ok(new LoginResponse(token, usuario.getCdUsuario(), usuario.getDsEmail(),usuario.getUserRole()));
+        return ResponseEntity.ok(new LoginResponse(
+                token,
+                usuario.getCdUsuario(),
+                usuario.getDsEmail(),
+                usuario.getUserRole(),
+                usuario.getNmCliente(),
+                usuario.getGoogleId(),
+                googleOAuth2Service.isProfileComplete(usuario)
+        ));
     }
 
     @PostMapping("/register")
@@ -49,5 +60,34 @@ public class AuthController {
         UsuarioResponseDto created = usuarioService.criarUsuario(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
-}
 
+    @PostMapping("/google/validate")
+    @Operation(summary = "Validar token do Google", description = "Valida o token do Google e cria ou atualiza o usuário")
+    public ResponseEntity<?> validateGoogleToken(@Valid @RequestBody GoogleTokenValidationRequest request) {
+        try {
+            UsuarioModel usuario = googleOAuth2Service.validateAndCreateOrUpdateUser(request.token());
+            String token = tokenConfig.generateToken(usuario);
+
+            LoginResponse response = new LoginResponse(
+                    token,
+                    usuario.getCdUsuario(),
+                    usuario.getDsEmail(),
+                    usuario.getUserRole(),
+                    usuario.getNmCliente(),
+                    usuario.getGoogleId(),
+                    googleOAuth2Service.isProfileComplete(usuario)
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("Token inválido ou expirado: " + e.getMessage()));
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class ErrorResponse {
+        private String message;
+    }
+}
