@@ -7,6 +7,7 @@ import dev.trier.ecommerce.dto.pedido.criacao.PedidoCriarDto;
 import dev.trier.ecommerce.dto.pedido.criacao.PedidoCriarResponseDto;
 import dev.trier.ecommerce.dto.pedido.ItemPedidoResponseDto;
 import dev.trier.ecommerce.dto.pedido.PedidoResumoResponseDto;
+import dev.trier.ecommerce.dto.pedido.criacao.PedidoResumoTodosResponseDto;
 import dev.trier.ecommerce.exceptions.RecursoNaoEncontradoException;
 import dev.trier.ecommerce.model.PedidoModel;
 import dev.trier.ecommerce.model.UsuarioModel;
@@ -15,10 +16,11 @@ import dev.trier.ecommerce.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-@Slf4j  // ✅ Adiciona logger automático
+@Slf4j
 @AllArgsConstructor
 @Service
 public class PedidoService {
@@ -105,16 +107,16 @@ public class PedidoService {
         log.info("Criando request AbacatePay - Pedido: {}, Valor: {}, Cliente: {}",
                 pedido.getCdPedido(), pedido.getVlTotalPedido(), usuario.getNmCliente());
 
-        // ✅ MUDANÇA AQUI: Usar Map vazio ao invés de null
+
         return new AbacatePayChargeRequest(
                 "ONE_TIME",
                 List.of("PIX"),
                 List.of(product),
-                "http://localhost:4200/meus-pedidos", // ✅ URL de retorno (cancelamento)
-                "http://localhost:4200/meus-pedidos?sucesso=true", // ✅ URL de sucesso
+                "http://localhost:4200/meus-pedidos",
+                "http://localhost:4200/meus-pedidos?sucesso=true",
                 customer,
                 "PEDIDO-" + pedido.getCdPedido(),
-                java.util.Collections.emptyMap() // ✅ AQUI: Objeto vazio ao invés de null
+                java.util.Collections.emptyMap()
         );
     }
 
@@ -157,7 +159,57 @@ public class PedidoService {
                         return new ItemPedidoResponseDto(cdProduto, nmProduto, quantidade, precoPorProdutoUnidade, total);
                     }).toList();
 
-            return new PedidoResumoResponseDto(pedido.getCdPedido(), pedido.getVlTotalPedido(), itens);
+            return new PedidoResumoResponseDto(pedido.getCdPedido(), pedido.getVlTotalPedido(),pedido.getDtFinalizacao(), itens);
+        }).toList();
+    }
+
+    @Cacheable(value = "todosPedidosCache")
+    @Transactional
+    public List<PedidoResumoTodosResponseDto> listarTodosPedidos() {
+
+        List<PedidoModel> pedidos = pedidoRepository.findAllComItens();
+
+        return pedidos.stream().map(pedido -> {
+
+            String nmCliente = pedido.getUsuario() != null
+                    ? pedido.getUsuario().getNmCliente()
+                    : null;
+
+            List<ItemPedidoResponseDto> itens = pedido.getItensPedido() == null
+                    ? List.of()
+                    : pedido.getItensPedido().stream().map(item -> {
+
+                Integer cdProduto = null;
+                String nmProduto = null;
+
+                if (item.getProduto() != null) {
+                    cdProduto = item.getProduto().getCdProduto();
+                    nmProduto = item.getProduto().getNmProduto();
+                }
+
+                Integer quantidade = item.getQtItem();
+                Double precoPorProdutoUnidade = item.getVlItemPedido();
+                Double total = (precoPorProdutoUnidade == null || quantidade == null)
+                        ? 0.0
+                        : precoPorProdutoUnidade * quantidade;
+
+                return new ItemPedidoResponseDto(
+                        cdProduto,
+                        nmProduto,
+                        quantidade,
+                        precoPorProdutoUnidade,
+                        total
+                );
+            }).toList();
+
+            return new PedidoResumoTodosResponseDto(
+                    pedido.getCdPedido(),
+                    pedido.getVlTotalPedido(),
+                    nmCliente,
+                    pedido.getDtFinalizacao(),
+                    itens
+            );
+
         }).toList();
     }
 }
