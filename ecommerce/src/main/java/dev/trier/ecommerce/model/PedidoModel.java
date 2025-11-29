@@ -10,6 +10,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -48,4 +49,7 @@ public class PedidoModel {
     @NotAudited
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedidoModel> itensPedido;
+
+    private LocalDate dtFinalizacao;
+
 }

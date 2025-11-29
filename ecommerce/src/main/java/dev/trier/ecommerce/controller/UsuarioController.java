@@ -62,7 +62,7 @@ public class UsuarioController {
     @Operation(summary = "Atualizar perfil do usuário", description = "Atualiza as informações de perfil do usuário")
     public ResponseEntity<UsuarioResponseDto> updateUserProfile(
             @PathVariable Integer cdUsuario,
-            @Valid @RequestBody UsuarioCriarDto dto) {
+            @Valid @RequestBody UsuarioUpdateDto dto) {
 
         UsuarioResponseDto updated = usuarioService.atualizarPerfil(cdUsuario, dto);
         return ResponseEntity.ok(updated);

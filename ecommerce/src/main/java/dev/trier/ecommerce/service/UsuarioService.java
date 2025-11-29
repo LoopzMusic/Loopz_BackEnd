@@ -141,17 +141,17 @@ public class UsuarioService {
                         usuario.getFlAtivo()
                 ));
     }
-    public UsuarioResponseDto atualizarPerfil(Integer cdUsuario, UsuarioCriarDto dto) {
+    public UsuarioResponseDto atualizarPerfil(Integer cdUsuario, UsuarioUpdateDto dto) {
         UsuarioModel usuario = usuarioRepository.findById(cdUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        usuario.setNmCliente(dto.nmCliente());
-        usuario.setNuCPF(dto.nuCPF());
-        usuario.setNuTelefone(dto.nuTelefone());
-        usuario.setDsEndereco(dto.dsEndereco());
-        usuario.setNuEndereco(dto.nuEndereco());
-        usuario.setDsCidade(dto.dsCidade());
-        usuario.setDsEstado(dto.dsEstado());
+        if (dto.nmCliente() != null) usuario.setNmCliente(dto.nmCliente());
+        if (dto.nuCPF() != null) usuario.setNuCPF(dto.nuCPF());
+        if (dto.nuTelefone() != null) usuario.setNuTelefone(dto.nuTelefone());
+        if (dto.dsCidade() != null) usuario.setDsCidade(dto.dsCidade());
+        if (dto.dsEstado() != null) usuario.setDsEstado(dto.dsEstado());
+        if (dto.dsEndereco() != null) usuario.setDsEndereco(dto.dsEndereco());
+        if (dto.nuEndereco() != null) usuario.setNuEndereco(dto.nuEndereco());
 
         UsuarioModel updated = usuarioRepository.save(usuario);
         return new UsuarioResponseDto(
@@ -165,7 +165,6 @@ public class UsuarioService {
                 updated.getDsEmail(),
                 updated.getFlAtivo()
         );
-
     }
 
 }
