@@ -4,14 +4,12 @@ import dev.trier.ecommerce.dto.AbacatePay.AbacatePayChargeRequest;
 import dev.trier.ecommerce.dto.AbacatePay.AbacatePayChargeResponse;
 import dev.trier.ecommerce.service.AbacatePayService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/v1/abacatepay")
+@CrossOrigin("*")
 public class AbacatePayController {
 
     private final AbacatePayService abacatePayService;
