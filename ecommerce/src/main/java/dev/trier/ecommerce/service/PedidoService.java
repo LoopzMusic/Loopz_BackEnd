@@ -162,7 +162,7 @@ public class PedidoService {
                         return new ItemPedidoResponseDto(cdProduto, nmProduto, quantidade, precoPorProdutoUnidade, total);
                     }).toList();
 
-            return new PedidoResumoResponseDto(pedido.getCdPedido(), pedido.getVlTotalPedido(),pedido.getDtFinalizacao(), itens);
+            return new PedidoResumoResponseDto(pedido.getCdPedido(), pedido.getVlTotalPedido(),pedido.getStatusPedido(),pedido.getDtFinalizacao(), itens);
         }).toList();
     }
 
