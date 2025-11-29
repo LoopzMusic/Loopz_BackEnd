@@ -8,6 +8,8 @@ import dev.trier.ecommerce.dto.pedido.criacao.PedidoCriarResponseDto;
 import dev.trier.ecommerce.dto.pedido.ItemPedidoResponseDto;
 import dev.trier.ecommerce.dto.pedido.PedidoResumoResponseDto;
 import dev.trier.ecommerce.dto.pedido.criacao.PedidoResumoTodosResponseDto;
+import dev.trier.ecommerce.model.enums.StatusPedido;
+import dev.trier.ecommerce.service.CarrinhoService;
 import dev.trier.ecommerce.exceptions.RecursoNaoEncontradoException;
 import dev.trier.ecommerce.model.PedidoModel;
 import dev.trier.ecommerce.model.UsuarioModel;
@@ -30,6 +32,7 @@ public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
     private final AbacatePayService abacatePayService;
+    private final CarrinhoService carrinhoService;
     private final UsuarioRepository usuarioRepository;
 
     @Transactional
@@ -82,6 +85,46 @@ public class PedidoService {
         return response;
     }
 
+    @Transactional
+    public void processarRetornoPagamento(String externalId, Boolean sucesso) {
+        log.info("Processando retorno de pagamento para externalId: {}, sucesso: {}", externalId, sucesso);
+
+        if (!externalId.startsWith("PEDIDO-")) {
+            log.error("ExternalId inválido: {}", externalId);
+            return;
+        }
+
+        Integer cdPedido = Integer.parseInt(externalId.substring("PEDIDO-".length()));
+
+        PedidoModel pedido = pedidoRepository.findById(cdPedido)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Pedido não encontrado para o código: " + cdPedido));
+
+        if (Boolean.TRUE.equals(sucesso)) {
+            // Pagamento bem-sucedido
+            pedido.setStatusPedido(StatusPedido.FINALIZADO);
+            pedido.setDtFinalizacao(java.time.LocalDate.now());
+            log.info("Pedido #{} atualizado para FINALIZADO.", cdPedido);
+            // A limpeza do carrinho e a criação dos itens do pedido devem ocorrer no frontend
+            // após o redirecionamento, ou o backend deve lidar com isso.
+            // Pelo código do frontend, a criação dos itens e a finalização do carrinho
+            // ocorrem ANTES do redirecionamento para o AbacatePay.
+            // O bug é que o pedido é criado e os itens são criados, mas o status
+            // não é alterado para FINALIZADO/CANCELADO.
+            // Como o frontend já criou os itens, vamos apenas finalizar o pedido.
+            // O frontend precisa ser ajustado para não limpar o carrinho
+            // antes de ter certeza do sucesso do pagamento.
+        } else {
+            // Pagamento falhou ou foi cancelado
+            pedido.setStatusPedido(StatusPedido.CANCELADO); // Adicionar CANCELADO ao enum StatusPedido
+            log.warn("Pedido #{} atualizado para CANCELADO.", cdPedido);
+            // O carrinho deve ser mantido.
+            // O frontend precisa ser ajustado para não limpar o carrinho
+            // antes de ter certeza do sucesso do pagamento.
+        }
+
+        pedidoRepository.save(pedido);
+    }
+
     private AbacatePayChargeRequest createChargeRequest(PedidoModel pedido) {
         UsuarioModel usuario = pedido.getUsuario();
 
@@ -115,8 +158,8 @@ public class PedidoService {
                 "ONE_TIME",
                 List.of("PIX"),
                 List.of(product),
-                "http://localhost:4200/meus-pedidos",
-                "http://localhost:4200/meus-pedidos?sucesso=true",
+                "http://localhost:8085/pedido/retorno-pagamento?externalId=PEDIDO-" + pedido.getCdPedido() + "&sucesso=false",
+                "http://localhost:8085/pedido/retorno-pagamento?externalId=PEDIDO-" + pedido.getCdPedido() + "&sucesso=true",
                 customer,
                 "PEDIDO-" + pedido.getCdPedido(),
                 java.util.Collections.emptyMap()
@@ -142,7 +185,10 @@ public class PedidoService {
             throw new RecursoNaoEncontradoException("Usuário não encontrado: " + cdUsuario);
         }
 
-        List<PedidoModel> pedidos = pedidoRepository.findByCdUsuarioComItem(cdUsuario);
+        List<PedidoModel> pedidos = pedidoRepository.findByCdUsuarioComItem(cdUsuario)
+                .stream()
+                .filter(pedido -> pedido.getStatusPedido() == StatusPedido.FINALIZADO)
+                .toList();
 
         return pedidos.stream().map(pedido -> {
             List<ItemPedidoResponseDto> itens = pedido.getItensPedido() == null ? List.of() :
