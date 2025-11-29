@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 
@@ -38,6 +39,18 @@ PedidoController {
                 .status(HttpStatus.CREATED)
                 .body(pedidoModel);
     }
+
+    @GetMapping(path = "/retorno-pagamento")
+    @Operation(summary = "Retorno de pagamento", description = "Endpoint para receber o retorno da API de pagamento e atualizar o status do pedido")
+    public RedirectView retornoPagamento(@RequestParam("externalId") String externalId,
+                                         @RequestParam(value = "sucesso", required = false) Boolean sucesso) {
+        pedidoService.processarRetornoPagamento(externalId, sucesso);
+
+        // Redireciona para o frontend, que irá tratar o status e redirecionar para a tela inicial
+        String urlFrontend = "http://localhost:4200/finalizar-compra?externalId=" + externalId + "&sucesso=" + sucesso;
+        return new RedirectView(urlFrontend);
+    }
+
     @GetMapping(path = "/listar/todos")
     @Operation(summary = "Listar pedidos", description = "Lista todos os pedidos cadastrados")
     public ResponseEntity<List<ListarPedidosResponseDto>> listarPedidos(){
@@ -64,9 +77,4 @@ PedidoController {
         List<PedidoResumoResponseDto> pedidos = pedidoService.listarPedidosDoUsuarioPorId(cdUsuario);
         return ResponseEntity.ok(pedidos);
     }
-
-
-
-
-
 }
