@@ -11,6 +11,7 @@ import dev.trier.ecommerce.dto.pedido.criacao.PedidoResumoTodosResponseDto;
 import dev.trier.ecommerce.exceptions.RecursoNaoEncontradoException;
 import dev.trier.ecommerce.model.PedidoModel;
 import dev.trier.ecommerce.model.UsuarioModel;
+import dev.trier.ecommerce.model.enums.StatusPedido;
 import dev.trier.ecommerce.repository.PedidoRepository;
 import dev.trier.ecommerce.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
@@ -18,6 +19,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -163,7 +166,7 @@ public class PedidoService {
         }).toList();
     }
 
-    @Cacheable(value = "todosPedidosCache")
+    
     @Transactional
     public List<PedidoResumoTodosResponseDto> listarTodosPedidos() {
 
@@ -205,6 +208,7 @@ public class PedidoService {
             return new PedidoResumoTodosResponseDto(
                     pedido.getCdPedido(),
                     pedido.getVlTotalPedido(),
+                    pedido.getStatusPedido(),
                     nmCliente,
                     pedido.getDtFinalizacao(),
                     itens
@@ -212,4 +216,18 @@ public class PedidoService {
 
         }).toList();
     }
+    @Transactional
+    public void atualizarStatusParaFinalizdo(Integer cdPedido) {
+        PedidoModel pedido = pedidoRepository.findById(cdPedido)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Pedido não encontrado: " + cdPedido));
+
+        pedido.setStatusPedido(StatusPedido.FINALIZADO);
+        pedido.setDtFinalizacao(LocalDate.now());
+
+        pedidoRepository.save(pedido);
+
+    }
+
+
+
 }
