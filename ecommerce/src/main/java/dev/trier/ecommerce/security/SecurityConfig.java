@@ -44,6 +44,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, "/api/pagamento/criar").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/pagamento/webhook").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/pedido/retorno-pagamento").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/pagamento/**").authenticated()
 
                         .requestMatchers(HttpMethod.GET, "/produto/{cdProduto}/imagem").permitAll()
