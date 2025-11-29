@@ -20,4 +20,9 @@ public interface PedidoRepository extends JpaRepository<PedidoModel, Integer> {
     WHERE p.usuario.cdUsuario = :cdUsuario
 """)
     List<PedidoModel> findByCdUsuarioComItem(@Param("cdUsuario") Integer cdUsuario);
+
+    @Query("SELECT p FROM PedidoModel p LEFT JOIN FETCH p.itensPedido")
+    List<PedidoModel> findAllComItens();
+
+
 }
