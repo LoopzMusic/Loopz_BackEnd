@@ -55,11 +55,10 @@ public class ItemPedidoService {
 
         ItemPedidoModel salvar=  itemPedidoRepository.save(itemPedidoModel);
 
-        // Atualiza status do pedido para FINALIZADO e seta dtFinalizacao
+
         try {
             if (pedidoModel.getStatusPedido() == null || pedidoModel.getStatusPedido() != StatusPedido.FINALIZADO) {
-                pedidoModel.setStatusPedido(StatusPedido.FINALIZADO);
-                pedidoModel.setDtFinalizacao(LocalDate.now());
+                pedidoModel.setStatusPedido(StatusPedido.ANDAMENTO);
                 pedidoRepository.save(pedidoModel);
             }
         } catch (Exception ex) {

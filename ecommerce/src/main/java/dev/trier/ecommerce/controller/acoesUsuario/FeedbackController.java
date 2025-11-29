@@ -4,7 +4,7 @@ import dev.trier.ecommerce.dto.feedback.FeedbackListResponseDto;
 import dev.trier.ecommerce.dto.feedback.FeedbackRequestDto;
 import dev.trier.ecommerce.dto.feedback.FeedbackResponseDto;
 import dev.trier.ecommerce.exceptions.RecursoNaoEncontradoException;
-import dev.trier.ecommerce.service.FeedbackService;
+import dev.trier.ecommerce.service.acoesUsuario.FeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

@@ -65,6 +65,11 @@ PedidoController {
         return ResponseEntity.ok(pedidos);
     }
 
+    @PatchMapping("/{cdPedido}/finalizado")
+    public ResponseEntity<Void> setarPedidoAndamento(@PathVariable Integer cdPedido) {
+        pedidoService.atualizarStatusParaFinalizdo(cdPedido);
+        return ResponseEntity.ok().build();
+    }
 
 
 

@@ -1,4 +1,4 @@
-package dev.trier.ecommerce.service;
+package dev.trier.ecommerce.service.acoesUsuario;
 
 import dev.trier.ecommerce.dto.feedback.FeedbackListResponseDto;
 import dev.trier.ecommerce.dto.feedback.FeedbackRequestDto;
