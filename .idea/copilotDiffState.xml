@@ -3,6 +3,24 @@
   <component name="CopilotDiffPersistence">
     <option name="pendingDiffs">
       <map>
+        <entry key="$PROJECT_DIR$/ecommerce/src/main/java/dev/trier/ecommerce/dto/feedback/FeedbackListResponseDto.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/ecommerce/src/main/java/dev/trier/ecommerce/dto/feedback/FeedbackListResponseDto.java" />
+              <option name="originalContent" value="package dev.trier.ecommerce.dto.feedback;&#10;&#10;import lombok.AllArgsConstructor;&#10;import lombok.Data;&#10;import lombok.NoArgsConstructor;&#10;&#10;import java.time.LocalDate;&#10;&#10;@Data&#10;@AllArgsConstructor&#10;@NoArgsConstructor&#10;public class FeedbackListResponseDto {&#10;&#10;    private Integer cdFeedback;&#10;    private Integer nuAvaliacao;&#10;    private String dsComentario;&#10;    private String nmCliente;&#10;    private String nmProduto;&#10;    private LocalDate dtCriacao;&#10;}&#10;" />
+              <option name="updatedContent" value="package dev.trier.ecommerce.dto.feedback;&#10;&#10;import java.time.LocalDate;&#10;&#10;public record FeedbackListResponseDto(&#10;        Integer cdFeedback,&#10;        Integer nuAvaliacao,&#10;        String dsComentario,&#10;        String nmCliente,&#10;        String nmProduto,&#10;        LocalDate dtCriacao&#10;) {}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/ecommerce/src/main/java/dev/trier/ecommerce/dto/produto/request/UpdateRequestDto.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/ecommerce/src/main/java/dev/trier/ecommerce/dto/produto/request/UpdateRequestDto.java" />
+              <option name="originalContent" value="package dev.trier.ecommerce.dto.produto.request;&#10;&#10;&#10;import lombok.AllArgsConstructor;&#10;import lombok.Data;&#10;import lombok.NoArgsConstructor;&#10;&#10;@Data&#10;@AllArgsConstructor&#10;@NoArgsConstructor&#10;public class UpdateRequestDto {&#10;    private String nmProduto;&#10;    private Double vlProduto;&#10;    private String dsProduto;&#10;    private String dsCategoria;&#10;    private Integer cdEmpresa;&#10;&#10;&#10;&#10;&#10;}&#10;" />
+              <option name="updatedContent" value="package dev.trier.ecommerce.dto.produto.request;&#13;&#10;&#13;&#10;public record UpdateRequestDto(&#13;&#10;        String nmProduto,&#13;&#10;        Double vlProduto,&#13;&#10;        String dsProduto,&#13;&#10;        String dsCategoria,&#13;&#10;        Integer cdEmpresa&#13;&#10;) {}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/ecommerce/src/main/java/dev/trier/ecommerce/service/ItemCarrinhoService.java">
           <value>
             <PendingDiffInfo>

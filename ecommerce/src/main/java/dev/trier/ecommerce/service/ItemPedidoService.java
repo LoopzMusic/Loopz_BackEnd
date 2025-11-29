@@ -6,6 +6,7 @@ import dev.trier.ecommerce.dto.itempedido.criacao.ListarItensPedidosResponseDto;
 import dev.trier.ecommerce.model.ItemPedidoModel;
 import dev.trier.ecommerce.model.PedidoModel;
 import dev.trier.ecommerce.model.ProdutoModel;
+import dev.trier.ecommerce.model.enums.StatusPedido;
 import dev.trier.ecommerce.repository.ItemPedidoRepository;
 import dev.trier.ecommerce.repository.PedidoRepository;
 import dev.trier.ecommerce.repository.ProdutoRepository;
@@ -19,6 +20,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -52,6 +54,17 @@ public class ItemPedidoService {
         itemPedidoModel.setQtItem(itemPedidoCriarDto.qtItem());
 
         ItemPedidoModel salvar=  itemPedidoRepository.save(itemPedidoModel);
+
+        // Atualiza status do pedido para FINALIZADO e seta dtFinalizacao
+        try {
+            if (pedidoModel.getStatusPedido() == null || pedidoModel.getStatusPedido() != StatusPedido.FINALIZADO) {
+                pedidoModel.setStatusPedido(StatusPedido.FINALIZADO);
+                pedidoModel.setDtFinalizacao(LocalDate.now());
+                pedidoRepository.save(pedidoModel);
+            }
+        } catch (Exception ex) {
+            System.out.printf("Erro ao atualizar status/dtFinalizacao do pedido: %s%n", ex.getMessage());
+        }
 
 
         try {

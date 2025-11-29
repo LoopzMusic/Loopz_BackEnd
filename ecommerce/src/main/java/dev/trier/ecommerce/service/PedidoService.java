@@ -5,14 +5,16 @@ import dev.trier.ecommerce.dto.pedido.criacao.PedidoCriarDto;
 import dev.trier.ecommerce.dto.pedido.criacao.PedidoCriarResponseDto;
 import dev.trier.ecommerce.dto.pedido.ItemPedidoResponseDto;
 import dev.trier.ecommerce.dto.pedido.PedidoResumoResponseDto;
+import dev.trier.ecommerce.dto.pedido.criacao.PedidoResumoTodosResponseDto;
 import dev.trier.ecommerce.exceptions.RecursoNaoEncontradoException;
 import dev.trier.ecommerce.model.PedidoModel;
 import dev.trier.ecommerce.model.UsuarioModel;
 import dev.trier.ecommerce.repository.PedidoRepository;
 import dev.trier.ecommerce.repository.UsuarioRepository;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
     private final UsuarioRepository usuarioRepository;
+
 
     @Transactional
     public PedidoCriarResponseDto criarPedido(PedidoCriarDto pedidoCriarDto){
@@ -85,7 +88,63 @@ public class PedidoService {
                         return new ItemPedidoResponseDto(cdProduto, nmProduto, quantidade, precoPorProdutoUnidade, total);
                     }).toList();
 
-            return new PedidoResumoResponseDto(pedido.getCdPedido(), pedido.getVlTotalPedido(), itens);
+            return new PedidoResumoResponseDto(
+                    pedido.getCdPedido(),
+                    pedido.getVlTotalPedido(),
+                    pedido.getDtFinalizacao(),
+                    itens);
         }).toList();
     }
+
+    @Cacheable(value = "todosPedidosCache")
+    @Transactional
+    public List<PedidoResumoTodosResponseDto> listarTodosPedidos() {
+
+        List<PedidoModel> pedidos = pedidoRepository.findAllComItens();
+
+        return pedidos.stream().map(pedido -> {
+
+            String nmCliente = pedido.getUsuario() != null
+                    ? pedido.getUsuario().getNmCliente()
+                    : null;
+
+            List<ItemPedidoResponseDto> itens = pedido.getItensPedido() == null
+                    ? List.of()
+                    : pedido.getItensPedido().stream().map(item -> {
+
+                Integer cdProduto = null;
+                String nmProduto = null;
+
+                if (item.getProduto() != null) {
+                    cdProduto = item.getProduto().getCdProduto();
+                    nmProduto = item.getProduto().getNmProduto();
+                }
+
+                Integer quantidade = item.getQtItem();
+                Double precoPorProdutoUnidade = item.getVlItemPedido();
+                Double total = (precoPorProdutoUnidade == null || quantidade == null)
+                        ? 0.0
+                        : precoPorProdutoUnidade * quantidade;
+
+                return new ItemPedidoResponseDto(
+                        cdProduto,
+                        nmProduto,
+                        quantidade,
+                        precoPorProdutoUnidade,
+                        total
+                );
+            }).toList();
+
+            return new PedidoResumoTodosResponseDto(
+                    pedido.getCdPedido(),
+                    pedido.getVlTotalPedido(),
+                    nmCliente,
+                    pedido.getDtFinalizacao(),
+                    itens
+            );
+
+        }).toList();
+    }
+
+
 }

@@ -74,6 +74,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/estoque/update/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/estoque/listar/**").hasRole("ADMIN")
 
+
+
+                        .requestMatchers(HttpMethod.GET, "/admin/**").permitAll()
+
+
+
                         .anyRequest().authenticated())
 
 
@@ -90,7 +96,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfig = new CorsConfiguration();
 
-        corsConfig.addAllowedOrigin("http://localhost:4200"); // Angular
+        corsConfig.addAllowedOrigin("http://localhost:4200");
         corsConfig.addAllowedHeader("*");
         corsConfig.addAllowedMethod("*");
         corsConfig.setAllowCredentials(true);
