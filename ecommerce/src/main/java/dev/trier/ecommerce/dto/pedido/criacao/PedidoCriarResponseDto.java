@@ -6,6 +6,7 @@ public record PedidoCriarResponseDto(
         Integer cdPedido,
         FormaPagamento formaPagamento,
         Double vlFrete,
-        Double vlTotalPedido
+        Double vlTotalPedido,
+        String urlPagamento
 ) {
 }
