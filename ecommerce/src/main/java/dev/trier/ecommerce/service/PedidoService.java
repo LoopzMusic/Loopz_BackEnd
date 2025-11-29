@@ -14,11 +14,11 @@ import dev.trier.ecommerce.repository.PedidoRepository;
 import dev.trier.ecommerce.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-import java.util.List;
-
+@Slf4j  // ✅ Adiciona logger automático
 @AllArgsConstructor
 @Service
 public class PedidoService {
@@ -28,85 +28,100 @@ public class PedidoService {
     private final UsuarioRepository usuarioRepository;
 
     @Transactional
-    public PedidoCriarResponseDto criarPedido(PedidoCriarDto pedidoCriarDto){
-        UsuarioModel usarioModel = usuarioRepository.findById(pedidoCriarDto.cdUsuario()).orElseThrow(
-                () -> new RuntimeException("Usuário não encontrado para o código: " + pedidoCriarDto.cdUsuario()) // Procura usuário antes de criar o pedidoCriarDto
-        );
+    public PedidoCriarResponseDto criarPedido(PedidoCriarDto pedidoCriarDto) {
+        UsuarioModel usuarioModel = usuarioRepository.findById(pedidoCriarDto.cdUsuario())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado para o código: " + pedidoCriarDto.cdUsuario()));
 
         PedidoModel pedidoModel = new PedidoModel();
-        pedidoModel.setUsuario(usarioModel);
+        pedidoModel.setUsuario(usuarioModel);
         pedidoModel.setFormaPagamento(pedidoCriarDto.formaPagamento());
         pedidoModel.setVlFrete(pedidoCriarDto.vlFrete());
         pedidoModel.setVlTotalPedido(pedidoCriarDto.vlTotalPedido());
 
         PedidoModel salvo = pedidoRepository.save(pedidoModel);
 
-        // 1. Criar a requisição de cobrança para o AbacatePay
-        AbacatePayChargeRequest chargeRequest = createChargeRequest(salvo);
+        String urlPagamento = null;
 
-        // 2. Enviar a requisição para o AbacatePay
-        // Usamos block() aqui para simplificar a integração com o método @Transactional síncrono.
-        // Em um cenário ideal, o método criarPedido seria assíncrono ou usaria um fluxo reativo completo.
-        AbacatePayChargeResponse chargeResponse = abacatePayService.createCharge(chargeRequest).block();
+        log.info("Forma de pagamento recebida: {}", pedidoCriarDto.formaPagamento().name());
 
-        // 3. Processar a resposta (Exemplo: salvar a URL de pagamento e o ID da cobrança)
-        if (chargeResponse != null && chargeResponse.getData() != null) {
-            // Aqui você salvaria o ID da cobrança (chargeResponse.getData().getId())
-            // e a URL de pagamento (chargeResponse.getData().getUrl()) no seu PedidoModel
-            // para que o frontend possa redirecionar o usuário.
-            // Por enquanto, vamos apenas retornar a URL de pagamento no DTO de resposta.
-            return new PedidoCriarResponseDto(
-                    salvo.getCdPedido(),
-                    salvo.getFormaPagamento(),
-                    salvo.getVlFrete(),
-                    salvo.getVlTotalPedido(),
-                    chargeResponse.getData().getUrl() // Adicionando a URL de pagamento
-            );
+        if ("PIX".equalsIgnoreCase(pedidoCriarDto.formaPagamento().name())) {
+            try {
+                log.info("Criando cobrança no AbacatePay para pedido #{}", salvo.getCdPedido());
+                AbacatePayChargeRequest chargeRequest = createChargeRequest(salvo);
+                AbacatePayChargeResponse chargeResponse = abacatePayService.createCharge(chargeRequest).block();
+
+                if (chargeResponse != null && chargeResponse.getData() != null) {
+                    urlPagamento = chargeResponse.getData().getUrl();
+                    log.info("URL de pagamento gerada com sucesso: {}", urlPagamento);
+                } else {
+                    log.error("Falha ao criar cobrança - response null ou data null. Response: {}", chargeResponse);
+                }
+            } catch (Exception e) {
+                log.error("Erro ao criar cobrança no AbacatePay: {}", e.getMessage(), e);
+            }
         } else {
-            // Tratar erro na criação da cobrança
-            throw new RuntimeException("Falha ao criar cobrança no AbacatePay.");
+            log.info("Forma de pagamento não é PIX, pulando AbacatePay");
         }
+
+        PedidoCriarResponseDto response = new PedidoCriarResponseDto(
+                salvo.getCdPedido(),
+                salvo.getFormaPagamento(),
+                salvo.getVlFrete(),
+                salvo.getVlTotalPedido(),
+                urlPagamento
+        );
+
+        log.info("Retornando resposta para frontend - cdPedido: {}, urlPagamento: {}",
+                response.cdPedido(), response.urlPagamento());
+
+        return response;
     }
 
-    // Método auxiliar para construir a requisição de cobrança
     private AbacatePayChargeRequest createChargeRequest(PedidoModel pedido) {
-        // Implementação simplificada, assumindo que o PedidoModel tem os itens
-        // **ATENÇÃO**: O PedidoModel precisa ter os itens carregados para que isso funcione.
-        // Se os itens não estiverem carregados, será necessário buscar o carrinho/itens.
+        UsuarioModel usuario = pedido.getUsuario();
 
-        // Exemplo de produto (simplificado, pois não temos a estrutura completa do PedidoModel)
+        if (usuario.getDsEmail() == null || usuario.getDsEmail().isBlank()) {
+            throw new IllegalArgumentException("Email do usuário é obrigatório para criar cobrança");
+        }
+        if (usuario.getNmCliente() == null || usuario.getNmCliente().isBlank()) {
+            throw new IllegalArgumentException("Nome do usuário é obrigatório para criar cobrança");
+        }
+
         AbacatePayChargeRequest.Product product = new AbacatePayChargeRequest.Product(
                 "PEDIDO-" + pedido.getCdPedido(),
                 "Compra na Loopz E-commerce",
-                "Pedido #" + pedido.getCdPedido() + " - Total: R$ " + pedido.getVlTotalPedido(),
-                1, // Quantidade total do pedido como 1 item
-                (int) (pedido.getVlTotalPedido() * 100) // Valor total em centavos
+                "Pedido #" + pedido.getCdPedido(),
+                1,
+                (int) (pedido.getVlTotalPedido() * 100)
         );
 
-        // Exemplo de cliente (simplificado)
         AbacatePayChargeRequest.Customer customer = new AbacatePayChargeRequest.Customer(
-                pedido.getUsuario().getNmCliente(),
-                null, // Telefone
-                pedido.getUsuario().getDsEmail(),
-                null // CPF/CNPJ
+                usuario.getNmCliente(),
+                usuario.getNuTelefone() != null ? usuario.getNuTelefone() : "",
+                usuario.getDsEmail(),
+                usuario.getNuCPF() != null ? usuario.getNuCPF() : ""
         );
 
+        log.info("Criando request AbacatePay - Pedido: {}, Valor: {}, Cliente: {}",
+                pedido.getCdPedido(), pedido.getVlTotalPedido(), usuario.getNmCliente());
+
+        // ✅ MUDANÇA AQUI: Usar Map vazio ao invés de null
         return new AbacatePayChargeRequest(
                 "ONE_TIME",
                 List.of("PIX"),
                 List.of(product),
-                "http://localhost:4200/payment/return", // URL de retorno (ajustar para o frontend)
-                "http://localhost:4200/payment/success", // URL de sucesso (ajustar para o frontend)
+                "http://localhost:4200/meus-pedidos", // ✅ URL de retorno (cancelamento)
+                "http://localhost:4200/meus-pedidos?sucesso=true", // ✅ URL de sucesso
                 customer,
                 "PEDIDO-" + pedido.getCdPedido(),
-                null
+                java.util.Collections.emptyMap() // ✅ AQUI: Objeto vazio ao invés de null
         );
     }
 
-    public List<ListarPedidosResponseDto> listarPedidos(){
+    public List<ListarPedidosResponseDto> listarPedidos() {
         return pedidoRepository.findAll()
                 .stream()
-                .map(pedidos-> new ListarPedidosResponseDto(
+                .map(pedidos -> new ListarPedidosResponseDto(
                         pedidos.getUsuario().getCdUsuario(),
                         pedidos.getFormaPagamento(),
                         pedidos.getVlFrete(),
@@ -118,7 +133,6 @@ public class PedidoService {
 
     @Transactional()
     public List<PedidoResumoResponseDto> listarPedidosDoUsuarioPorId(Integer cdUsuario) {
-
         if (!usuarioRepository.existsById(cdUsuario)) {
             throw new RecursoNaoEncontradoException("Usuário não encontrado: " + cdUsuario);
         }
