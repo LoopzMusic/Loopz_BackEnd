@@ -354,16 +354,6 @@ Verifique:
 - URIs de redirecionamento configuradas no Google Cloud
 - Aplicação rodando na porta correta
 
-## 📊 Monitoramento
-
-### Actuator Endpoints
-
-```http
-GET /actuator/health        # Status da aplicação
-GET /actuator/info          # Informações da aplicação
-GET /actuator/metrics       # Métricas
-```
-
 ### Padrões de Código
 
 - Siga as convenções do Java
