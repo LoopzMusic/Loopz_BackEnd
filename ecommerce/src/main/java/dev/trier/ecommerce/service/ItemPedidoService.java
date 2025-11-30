@@ -10,6 +10,7 @@ import dev.trier.ecommerce.model.enums.StatusPedido;
 import dev.trier.ecommerce.repository.ItemPedidoRepository;
 import dev.trier.ecommerce.repository.PedidoRepository;
 import dev.trier.ecommerce.repository.ProdutoRepository;
+import dev.trier.ecommerce.service.emailCredencialService.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
