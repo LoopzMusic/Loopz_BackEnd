@@ -19,9 +19,7 @@ public class GoogleOAuth2Service {
     private final UsuarioRepository usuarioRepository;
     private final ObjectMapper objectMapper;
 
-    /**
-     * Valida o token do Google e cria ou atualiza o usuário
-     */
+
     public UsuarioModel validateAndCreateOrUpdateUser(String googleToken) throws Exception {
         Map<String, Object> claims = verifyGoogleToken(googleToken);
 
