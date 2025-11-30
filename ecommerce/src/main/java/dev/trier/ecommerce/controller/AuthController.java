@@ -47,8 +47,8 @@ public class AuthController {
                 token,
                 usuario.getCdUsuario(),
                 usuario.getDsEmail(),
-                usuario.getUserRole(),
                 usuario.getNmCliente(),
+                usuario.getUserRole(),
                 usuario.getGoogleId(),
                 googleOAuth2Service.isProfileComplete(usuario)
         ));
@@ -72,8 +72,8 @@ public class AuthController {
                     token,
                     usuario.getCdUsuario(),
                     usuario.getDsEmail(),
-                    usuario.getUserRole(),
                     usuario.getNmCliente(),
+                    usuario.getUserRole(),
                     usuario.getGoogleId(),
                     googleOAuth2Service.isProfileComplete(usuario)
             );

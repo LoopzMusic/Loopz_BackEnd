@@ -8,7 +8,6 @@ public record LoginResponse(
         String nmCliente,
         String dsEmail,
         UsersRole userRole,
-        String nmCliente,
         String googleId,
         Boolean profileComplete
 ) {}
