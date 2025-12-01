@@ -1,4 +1,4 @@
-# 🛒 E-commerce Hardware - Backend
+# 🛒 E-commerce Instrumentos Musicais - Backend
 
 > API REST robusta para e-commerce de hardware desenvolvida com Spring Boot
 
