@@ -12,7 +12,7 @@
 
 Este é o backend de um e-commerce especializado em hardware, desenvolvido com Spring Boot. A API fornece endpoints RESTful completos para gerenciamento de produtos, usuários, pedidos, autenticação e integração com serviços externos.
 
-> 🔗 **Frontend**: Este backend é consumido pelo [Frontend Angular](../frontend/README.md). Veja as instruções de instalação do frontend após configurar o backend.
+> 🔗 **Frontend**: Este backend é consumido pelo [Frontend Angular]([../frontend/README.md](https://github.com/LoopzMusic/Loopz_FrontEnd)). Veja as instruções de instalação do frontend após configurar o backend.
 
 ## ✨ Principais Funcionalidades
 
